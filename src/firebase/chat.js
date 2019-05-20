@@ -19,7 +19,6 @@ export const listenMsg = cb => {
   firebase
     .database()
     .ref(`chat/${currentRoom}`)
-    .limitToLast(100)
     .on('value', cb)
 }
 
@@ -33,7 +32,6 @@ export const changeRoom = newRoom => {
     firebase
       .database()
       .ref(`chat/${currentRoom}`)
-      .limitToLast(100)
       .on('value', currCb)
   }
 }

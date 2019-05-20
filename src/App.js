@@ -14,7 +14,7 @@ class App extends Component {
   setForceScroll = val => {
     this.forceScroll = val
   }
-  
+
   getForceScroll = () => this.forceScroll
 
   render() {
