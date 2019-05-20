@@ -35,6 +35,7 @@ class UserInput extends Component {
     return (
       <form className={classes.form} onSubmit={this.onSubmit}>
         <TextField
+          autoFocus
           label={getName()}
           className={classes.input}
           value={userInput}
