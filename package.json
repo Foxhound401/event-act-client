@@ -4,7 +4,8 @@
   "description": "A minimal React.js boilerplate with parcel as bundler",
   "main": "index.js",
   "scripts": {
-    "start": "parcel ./src/index.html --open"
+    "start": "parcel ./src/index.html --open",
+    "build": "rm -rf dist && parcel build ./src/index.html --no-source-maps"
   },
   "keywords": [
     "parcel",
@@ -13,10 +14,30 @@
   "author": "“Robin <“wrobin@gmx.net”> (https://www.robinwieruch.de)",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
+    "firebase": "^6.0.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "sillyname": "^0.1.0"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.3"
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-syntax-class-properties": "^7.2.0",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-watch": "^5.1.2",
+    "parcel-bundler": "^1.12.3",
+    "prettier": "^1.17.1"
   }
 }
