@@ -1,34 +1,59 @@
 import firebase from 'firebase/app'
-
 import generateName from 'sillyname'
+import { defaultRoom } from '../utils/constants'
+
+import { getCurrentRoom } from './chat'
 
 let currentName = ''
+const currCbs = {}
 
-// TODO: check if user existed online
-export const checkAvailability = newName => {
-  // firebase.database().ref(`user/${currentName}`).once('value').then(snap => {
-  //   const val = snap.val()
-  //   if (!val || Date.now() - val.date > )
-  // })
-  return true
-}
-
-export const createName = () => {
-  const dateStr = Date.now().toString()
-  const newName = generateName() + ' ' + dateStr.substr(dateStr.length - 4)
-  if (checkAvailability(newName)) {
-    currentName = newName
-    return currentName
+export const listenName = cb => {
+  let newKey = new Date().getTime()
+  while (currCbs[newKey]) {
+    newKey = new Date().getTime()
   }
-  return createName()
+  currCbs[newKey] = cb
+  return () => delete currCbs[newKey]
 }
 
-export const setName = manualName => {
-  if (checkAvailability(manualName)) {
+const trigger = () =>
+  Object.keys(currCbs).forEach(key => currCbs[key] && currCbs[key](currentName))
+
+export const checkAvailability = newName => {
+  const room = getCurrentRoom ? getCurrentRoom() : defaultRoom
+  return firebase
+    .database()
+    .ref(`chat/${room}`)
+    .once('value')
+    .then(snap => {
+      const val = snap.val()
+      const foundDuplicate = Object.keys(val).find(key => {
+        const { user } = val[key] || {}
+        return user === newName
+      })
+      if (foundDuplicate) {
+        return false
+      }
+      return true
+    })
+}
+
+export const setName = async manualName => {
+  if (await checkAvailability(manualName)) {
     currentName = manualName
+    trigger()
     return currentName
   }
   return false
+}
+
+export const createName = async () => {
+  const dateStr = Date.now().toString()
+  const newName = generateName() + ' ' + dateStr.substr(dateStr.length - 4)
+  if (await setName(newName)) {
+    return newName
+  }
+  return createName()
 }
 
 createName()

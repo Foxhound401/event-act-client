@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { listenMsg } from '../firebase/chat'
+import { listenMsg, stopListenMsg } from '../firebase/chat'
 
 class ChatList extends Component {
   state = {
@@ -38,6 +38,10 @@ class ChatList extends Component {
         }
       }
     })
+  }
+
+  componentWillUnmount() {
+    stopListenMsg()
   }
 
   render() {

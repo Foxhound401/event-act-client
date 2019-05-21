@@ -1,32 +1,31 @@
 import firebase from 'firebase/app'
 import { getName } from './user'
+import { defaultRoom } from '../utils/constants'
 
-let currentRoom = 'public'
+let currentRoom = defaultRoom
 let currCb
 
+export const getCurrentRoomRef = () =>
+  firebase.database().ref(`chat/${currentRoom}`)
+
 export const sendMsg = msg => {
-  return firebase
-    .database()
-    .ref(`chat/${currentRoom}`)
-    .push({
-      user: getName(),
-      msg,
-    })
+  return getCurrentRoomRef().push({
+    user: getName(),
+    msg,
+  })
 }
 
 export const listenMsg = cb => {
   currCb = cb
-  firebase
-    .database()
-    .ref(`chat/${currentRoom}`)
-    .on('value', cb)
+  getCurrentRoomRef().on('value', cb)
+}
+export const stopListenMsg = cb => {
+  currCb = null
+  getCurrentRoomRef().on('value', cb)
 }
 
 export const changeRoom = newRoom => {
-  firebase
-    .database()
-    .ref(`chat/${currentRoom}`)
-    .off('value')
+  getCurrentRoomRef().off('value')
   currentRoom = newRoom
   if (currCb) {
     firebase
@@ -35,3 +34,5 @@ export const changeRoom = newRoom => {
       .on('value', currCb)
   }
 }
+
+export const getCurrentRoom = () => currentRoom
