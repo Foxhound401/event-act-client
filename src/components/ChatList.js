@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { listenMsg, stopListenMsg } from '../firebase/chat'
+import { listenMsg } from '../firebase/chat'
 
 class ChatList extends Component {
   state = {
@@ -11,37 +11,26 @@ class ChatList extends Component {
   }
 
   componentDidMount() {
-    listenMsg(snap => {
-      const roomMsgs = snap.val()
-      if (roomMsgs && Object.keys(roomMsgs).length > 0) {
-        const messages = Object.keys(roomMsgs).map(key => ({
-          key,
-          ...roomMsgs[key],
-        }))
-        if (messages.length > 0) {
-          this.setState(
-            {
-              chatMessages: messages,
-            },
-            () => {
-              const elem = document.getElementById('chat-rows')
-              const { getForceScroll, setForceScroll } = this.props
-              if (
-                getForceScroll() ||
-                elem.scrollHeight - elem.clientHeight - elem.scrollTop < 100
-              ) {
-                if (getForceScroll()) setForceScroll(false)
-                elem.scrollTop = elem.scrollHeight
-              }
+    listenMsg(mergedMsgs => {
+      if (mergedMsgs.length > 0) {
+        this.setState(
+          {
+            chatMessages: mergedMsgs,
+          },
+          () => {
+            const elem = document.getElementById('chat-rows')
+            const { getForceScroll, setForceScroll } = this.props
+            if (
+              getForceScroll() ||
+              elem.scrollHeight - elem.clientHeight - elem.scrollTop < 100
+            ) {
+              if (getForceScroll()) setForceScroll(false)
+              elem.scrollTop = elem.scrollHeight
             }
-          )
-        }
+          }
+        )
       }
     })
-  }
-
-  componentWillUnmount() {
-    stopListenMsg()
   }
 
   render() {
@@ -50,16 +39,23 @@ class ChatList extends Component {
     return (
       <div id="chat-rows" className={classes.chatRowWrapper}>
         <List dense>
-          {chatMessages.map(item => (
-            <ListItem key={item.key}>
-              <ListItemText
-                classes={{
-                  root: classes.chatTextRootName,
-                  primary: classes.chatText,
-                }}
-                primary={item.user}
-                // secondary={'Secondary text'}
-              />
+          {chatMessages.map((item, index) => (
+            <ListItem
+              className={classes.chatItem}
+              key={index + '-' + (item.key || item.time)}
+            >
+              {item.user ? (
+                <ListItemText
+                  classes={{
+                    root: classes.chatTextRootName,
+                    primary: classes.chatText,
+                  }}
+                  primary={item.user}
+                  // secondary={'Secondary text'}
+                />
+              ) : (
+                false
+              )}
               <ListItemText
                 classes={{
                   root: classes.chatTextRoot,
@@ -88,6 +84,10 @@ const styles = () => ({
     flexShrink: 0,
     flexGrow: 0,
     padding: '0px 5px',
+  },
+  chatItem: {
+    paddingTop: '4px',
+    paddingBottom: '4px',
   },
 })
 

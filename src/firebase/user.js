@@ -13,6 +13,7 @@ export const listenName = cb => {
     newKey = new Date().getTime()
   }
   currCbs[newKey] = cb
+  cb(currentName)
   return () => delete currCbs[newKey]
 }
 
@@ -21,16 +22,21 @@ const trigger = () =>
 
 export const checkAvailability = newName => {
   const room = getCurrentRoom ? getCurrentRoom() : defaultRoom
+  console.log('newName', newName)
+
   return firebase
     .database()
     .ref(`chat/${room}`)
     .once('value')
     .then(snap => {
       const val = snap.val()
+      console.log('val', val)
       const foundDuplicate = Object.keys(val).find(key => {
         const { user } = val[key] || {}
         return user === newName
       })
+      console.log('foundDuplicate', foundDuplicate)
+
       if (foundDuplicate) {
         return false
       }
@@ -39,12 +45,13 @@ export const checkAvailability = newName => {
 }
 
 export const setName = async manualName => {
+  if (currentName === manualName) throw new Error('You already has that name')
   if (await checkAvailability(manualName)) {
     currentName = manualName
     trigger()
     return currentName
   }
-  return false
+  throw new Error('Name being used. Plz choose another one.')
 }
 
 export const createName = async () => {

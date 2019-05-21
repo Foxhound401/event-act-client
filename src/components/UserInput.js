@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import { sendMsg } from '../firebase/chat'
-import { listenName, setName } from '../firebase/user'
+import { sendMsg, pushLocalMsg } from '../firebase/chat'
+import { listenName } from '../firebase/user'
+import { isCmd, processCmd } from '../utils/command'
 
 class UserInput extends Component {
   state = {
@@ -32,22 +33,17 @@ class UserInput extends Component {
     e.preventDefault()
     const { userInput } = this.state
     if (userInput && (!this.lastSent || Date.now() - this.lastSent > 400)) {
-      if (userInput.startsWith('\\set-name ')) {
-        const name = userInput.substring(10)
-        const newName = await setName(name)
-        if (newName) {
-          this.lastSent = Date.now()
-          this.setState({
-            userInput: '',
-          })
-        }
+      this.lastSent = Date.now()
+      this.setState({
+        userInput: '',
+      })
+      if (isCmd(userInput)) {
+        const res = await processCmd(userInput)
+        const { success, msg } = res
+        pushLocalMsg([success ? 'CMD SUCCESS' : 'CMD FAILED', msg])
       } else {
         this.props.setForceScroll && this.props.setForceScroll(true)
         sendMsg(userInput)
-        this.lastSent = Date.now()
-        this.setState({
-          userInput: '',
-        })
       }
     }
     return false

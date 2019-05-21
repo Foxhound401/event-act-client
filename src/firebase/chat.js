@@ -3,7 +3,26 @@ import { getName } from './user'
 import { defaultRoom } from '../utils/constants'
 
 let currentRoom = defaultRoom
-let currCb
+const currCbs = {}
+const localMsg = []
+let remoteMsg = []
+let mergedMsg = []
+
+const trigger = () =>
+  Object.keys(currCbs).forEach(key => currCbs[key] && currCbs[key](mergedMsg))
+
+const mergeMsgs = () => {
+  if (remoteMsg.length === 0) mergedMsg = localMsg
+  else if (localMsg.length === 0) mergedMsg = remoteMsg
+  else {
+    mergedMsg = [...remoteMsg, ...localMsg].sort((a, b) => {
+      if (a.time - b.time > 0) return 1
+      if (a.time - b.time < 0) return -1
+      return 0
+    })
+  }
+  trigger()
+}
 
 export const getCurrentRoomRef = () =>
   firebase.database().ref(`chat/${currentRoom}`)
@@ -12,27 +31,56 @@ export const sendMsg = msg => {
   return getCurrentRoomRef().push({
     user: getName(),
     msg,
+    time: new Date().getTime(),
   })
 }
 
 export const listenMsg = cb => {
-  currCb = cb
-  getCurrentRoomRef().on('value', cb)
-}
-export const stopListenMsg = cb => {
-  currCb = null
-  getCurrentRoomRef().on('value', cb)
+  let newKey = new Date().getTime()
+  while (currCbs[newKey]) {
+    newKey = new Date().getTime()
+  }
+  currCbs[newKey] = cb
+  cb(mergedMsg)
+  return () => delete currCbs[newKey]
 }
 
+export const startListenMsg = () => {
+  getCurrentRoomRef().on('value', snap => {
+    const roomMsgs = snap.val()
+    if (roomMsgs && Object.keys(roomMsgs).length > 0) {
+      remoteMsg = Object.keys(roomMsgs).map(key => ({
+        key,
+        type: 'remote',
+        ...roomMsgs[key],
+      }))
+      mergeMsgs()
+    }
+  })
+}
 export const changeRoom = newRoom => {
   getCurrentRoomRef().off('value')
   currentRoom = newRoom
-  if (currCb) {
-    firebase
-      .database()
-      .ref(`chat/${currentRoom}`)
-      .on('value', currCb)
-  }
+  startListenMsg()
 }
 
 export const getCurrentRoom = () => currentRoom
+
+const divider = '=========='
+export const pushLocalMsg = (msgs = []) => {
+  localMsg.push(
+    ...[divider, ...msgs, divider].map(item => ({
+      type: 'local',
+      time: new Date().getTime(),
+      msg: item,
+    }))
+  )
+  mergeMsgs()
+}
+
+pushLocalMsg([
+  'Welcome to Chattery!',
+  'type `/set-name xxxxxx` to change your name',
+  'more will come later',
+])
+startListenMsg()
