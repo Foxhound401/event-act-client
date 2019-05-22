@@ -55,7 +55,7 @@ export const processCmd = async (input = '') => {
         return getRes(true, ['Set Name to ' + newName])
       }
     } catch (e) {
-      return getRes(false, e.message)
+      return getRes(false, [e.message])
     }
   }
   if (CMD_LIST.HELP.prefix.indexOf(prefix) > -1) {
