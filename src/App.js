@@ -3,6 +3,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import colors from './utils/colors'
+import './utils/statusMonitor'
 import UserInput from './components/UserInput'
 import ChatList from './components/ChatList'
 

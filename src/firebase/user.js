@@ -6,6 +6,7 @@ import { getCurrentRoom } from './chat'
 
 let currentName = ''
 const currCbs = {}
+let lastChangeName
 
 export const listenName = cb => {
   let newKey = new Date().getTime()
@@ -20,33 +21,65 @@ export const listenName = cb => {
 const trigger = () =>
   Object.keys(currCbs).forEach(key => currCbs[key] && currCbs[key](currentName))
 
-export const checkAvailability = newName => {
+export const checkAvailability = async newName => {
   const room = getCurrentRoom ? getCurrentRoom() : defaultRoom
 
+  const res = await Promise.all([
+    firebase
+      .database()
+      .ref(`chat/${room}`)
+      .orderByChild('user')
+      .equalTo(newName)
+      .once('value')
+      .then(snap => {
+        const val = snap.val()
+        if (!val) return true
+        const foundDuplicate = Object.keys(val).find(key => {
+          const { user } = val[key] || {}
+          return user === newName
+        })
+        if (foundDuplicate) {
+          return false
+        }
+        return true
+      }),
+    firebase
+      .database()
+      .ref(`status/${newName}`)
+      .once('value')
+      .then(snap => {
+        const val = snap.val()
+        if (
+          !val ||
+          new Date().getTime() - new Date(val).getTime() > 10 * 60000
+        ) {
+          return true
+        }
+        return false
+      }),
+  ])
+
+  return res.every(Boolean)
+}
+
+export const checkIn = () => {
   return firebase
     .database()
-    .ref(`chat/${room}`)
-    .orderByChild('user')
-    .equalTo(newName)
-    .once('value')
-    .then(snap => {
-      const val = snap.val()
-      if (!val) return true
-      const foundDuplicate = Object.keys(val).find(key => {
-        const { user } = val[key] || {}
-        return user === newName
-      })
-      if (foundDuplicate) {
-        return false
-      }
-      return true
-    })
+    .ref(`status/${currentName}`)
+    .set(firebase.database.ServerValue.TIMESTAMP)
 }
 
 export const setName = async manualName => {
   if (currentName === manualName) throw new Error('You already has that name')
+  if (
+    lastChangeName &&
+    new Date().getTime() - lastChangeName.getTime() <= 60000
+  )
+    throw new Error('Must wait at least 1 min between name changing.')
   if (await checkAvailability(manualName)) {
+    lastChangeName = new Date()
     currentName = manualName
+    checkIn()
     trigger()
     return currentName
   }
@@ -56,8 +89,12 @@ export const setName = async manualName => {
 export const createName = async () => {
   const dateStr = Date.now().toString()
   const newName = generateName() + ' ' + dateStr.substr(dateStr.length - 4)
-  if (await setName(newName)) {
-    return newName
+  try {
+    if (await setName(newName)) {
+      return newName
+    }
+  } catch (e) {
+    console.error(e)
   }
   return createName()
 }

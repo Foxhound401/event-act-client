@@ -31,7 +31,7 @@ export const sendMsg = msg => {
   return getCurrentRoomRef().push({
     user: getName(),
     msg,
-    time: new Date().getTime(),
+    time: firebase.database.ServerValue.TIMESTAMP,
   })
 }
 
