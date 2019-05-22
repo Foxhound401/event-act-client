@@ -80,7 +80,9 @@ export const pushLocalMsg = (msgs = []) => {
 
 pushLocalMsg([
   'Welcome to Chattery!',
-  'type `/set-name xxxxxx` to change your name',
-  'more will come later',
+  'type /set-name xxxxxx to change your name',
+  'type /h for list of cmd',
+  'or /h (cmd) for specific descriptions of a cmd',
+  'More will come later!',
 ])
 startListenMsg()

@@ -40,7 +40,14 @@ class UserInput extends Component {
       if (isCmd(userInput)) {
         const res = await processCmd(userInput)
         const { success, msg } = res
-        pushLocalMsg([success ? 'CMD SUCCESS' : 'CMD FAILED', msg])
+        pushLocalMsg([
+          ...(typeof success === 'boolean'
+            ? success
+              ? ['Success']
+              : ['Failed']
+            : []),
+          ...msg,
+        ])
       } else {
         this.props.setForceScroll && this.props.setForceScroll(true)
         sendMsg(userInput)
@@ -54,14 +61,19 @@ class UserInput extends Component {
     const { classes } = this.props
     return (
       <form className={classes.form} onSubmit={this.onSubmit}>
-        <TextField
-          autoFocus
-          label={name}
-          className={classes.input}
-          value={userInput}
-          onChange={this.onUserInputChange}
-          margin="normal"
-        />
+        {name ? (
+          <TextField
+            autoFocus
+            disabled={!name}
+            label={name}
+            className={classes.input}
+            value={userInput}
+            onChange={this.onUserInputChange}
+            margin="normal"
+          />
+        ) : (
+          false
+        )}
       </form>
     )
   }
