@@ -58,7 +58,7 @@ export const checkOff = () => {
       .remove()
 }
 
-export const setName = async manualName => {
+export const setName = async (manualName, first) => {
   if (currentName === manualName) throw new Error('You already has that name')
   if (
     lastChangeName &&
@@ -66,7 +66,7 @@ export const setName = async manualName => {
   )
     throw new Error('Must wait at least 1 min between name changing.')
   if (await checkAvailability(manualName)) {
-    lastChangeName = new Date()
+    if (!first) lastChangeName = new Date()
     checkOff()
     currentName = manualName
     checkIn()
@@ -80,7 +80,7 @@ export const createName = async () => {
   const dateStr = Date.now().toString()
   const newName = generateName() + ' ' + dateStr.substr(dateStr.length - 4)
   try {
-    if (await setName(newName)) {
+    if (await setName(newName, true)) {
       return newName
     }
   } catch (e) {
