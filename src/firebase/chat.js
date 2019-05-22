@@ -5,7 +5,7 @@ import { defaultRoom } from '../utils/constants'
 let currentRoom = defaultRoom
 const currCbs = {}
 const localMsg = []
-let remoteMsg = []
+const remoteMsg = []
 let mergedMsg = []
 
 const trigger = () =>
@@ -46,20 +46,20 @@ export const listenMsg = cb => {
 }
 
 export const startListenMsg = () => {
-  getCurrentRoomRef().on('value', snap => {
-    const roomMsgs = snap.val()
-    if (roomMsgs && Object.keys(roomMsgs).length > 0) {
-      remoteMsg = Object.keys(roomMsgs).map(key => ({
-        key,
+  getCurrentRoomRef().on('child_added', data => {
+    const roomMsg = data.val()
+    if (roomMsg) {
+      remoteMsg.push({
+        key: data.key,
         type: 'remote',
-        ...roomMsgs[key],
-      }))
+        ...roomMsg,
+      })
       mergeMsgs()
     }
   })
 }
 export const changeRoom = newRoom => {
-  getCurrentRoomRef().off('value')
+  getCurrentRoomRef().off()
   currentRoom = newRoom
   startListenMsg()
 }

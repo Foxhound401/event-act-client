@@ -22,21 +22,20 @@ const trigger = () =>
 
 export const checkAvailability = newName => {
   const room = getCurrentRoom ? getCurrentRoom() : defaultRoom
-  console.log('newName', newName)
 
   return firebase
     .database()
     .ref(`chat/${room}`)
+    .orderByChild('user')
+    .equalTo(newName)
     .once('value')
     .then(snap => {
       const val = snap.val()
-      console.log('val', val)
+      if (!val) return true
       const foundDuplicate = Object.keys(val).find(key => {
         const { user } = val[key] || {}
         return user === newName
       })
-      console.log('foundDuplicate', foundDuplicate)
-
       if (foundDuplicate) {
         return false
       }
