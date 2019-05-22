@@ -4,7 +4,7 @@ const CMD_LIST = {
   SET_NAME: {
     prefix: ['set-name'],
     help: [
-      'Syntax: /set-name xxxxx',
+      'Syntax: /set-name (name)',
       '',
       'Result of name changing will be displayed along with reasons in case of reject',
       '',
