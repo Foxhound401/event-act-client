@@ -27,31 +27,13 @@ export const checkAvailability = async newName => {
   const res = await Promise.all([
     firebase
       .database()
-      .ref(`chat/${room}`)
-      .orderByChild('user')
-      .equalTo(newName)
-      .once('value')
-      .then(snap => {
-        const val = snap.val()
-        if (!val) return true
-        const foundDuplicate = Object.keys(val).find(key => {
-          const { user } = val[key] || {}
-          return user === newName
-        })
-        if (foundDuplicate) {
-          return false
-        }
-        return true
-      }),
-    firebase
-      .database()
       .ref(`status/${newName}`)
       .once('value')
       .then(snap => {
         const val = snap.val()
         if (
-          !val ||
-          new Date().getTime() - new Date(val).getTime() > 10 * 60000
+          !val
+          // new Date().getTime() - new Date(val).getTime() > 10 * 60000
         ) {
           return true
         }
@@ -68,6 +50,13 @@ export const checkIn = () => {
     .ref(`status/${currentName}`)
     .set(firebase.database.ServerValue.TIMESTAMP)
 }
+export const checkOff = () => {
+  if (currentName)
+    return firebase
+      .database()
+      .ref(`status/${currentName}`)
+      .remove()
+}
 
 export const setName = async manualName => {
   if (currentName === manualName) throw new Error('You already has that name')
@@ -78,6 +67,7 @@ export const setName = async manualName => {
     throw new Error('Must wait at least 1 min between name changing.')
   if (await checkAvailability(manualName)) {
     lastChangeName = new Date()
+    checkOff()
     currentName = manualName
     checkIn()
     trigger()

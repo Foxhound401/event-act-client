@@ -1,4 +1,4 @@
-import { checkIn } from '../firebase/user'
+import { checkIn, checkOff } from '../firebase/user'
 
 // Set the name of the hidden property and the change event for visibility
 let hidden
@@ -44,3 +44,5 @@ if (typeof document.addEventListener === 'undefined' || hidden === undefined) {
   // Handle page visibility change
   document.addEventListener(visibilityChange, handleVisibilityChange, false)
 }
+
+window.addEventListener('beforeunload', checkOff)

@@ -22,7 +22,7 @@ class ChatList extends Component {
             const { getForceScroll, setForceScroll } = this.props
             if (
               getForceScroll() ||
-              elem.scrollHeight - elem.clientHeight - elem.scrollTop < 100
+              elem.scrollHeight - elem.clientHeight - elem.scrollTop < 350
             ) {
               if (getForceScroll()) setForceScroll(false)
               elem.scrollTop = elem.scrollHeight
