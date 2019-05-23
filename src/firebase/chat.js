@@ -77,13 +77,13 @@ export const startListenUsersInRoom = () => {
   getUsersInRoomRef().on('child_removed', snap => {
     pushLocalMsg([snap.key + ' left.'], true)
   })
-  getUsersInRoomRef().on('child_changed', snap => {
+  getUsersInRoomRef().on('child_added', snap => {
     pushLocalMsg([snap.key + ' enter the room.'], true)
   })
 }
 export const stopListenUsersInRoom = () => {
   getUsersInRoomRef().off('child_removed')
-  getUsersInRoomRef().off('child_changed')
+  getUsersInRoomRef().off('child_added')
 }
 
 export const msgSetup = () => {
