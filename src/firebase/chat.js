@@ -1,5 +1,5 @@
 import firebase from 'firebase/app'
-import { getName, checkIn } from './user'
+import { getName, checkIn, getUsersInRoomRef } from './user'
 import { defaultRoom } from '../utils/constants'
 
 let currentRoom = window.location.pathname.substring(1) || defaultRoom
@@ -62,15 +62,28 @@ export const startListenMsg = () => {
 export const getCurrentRoom = () => currentRoom || 'public'
 
 const divider = '=========='
-export const pushLocalMsg = (msgs = []) => {
+export const pushLocalMsg = (msgs = [], noDivider) => {
   localMsg.push(
-    ...[divider, ...msgs, divider].map(item => ({
+    ...(noDivider ? msgs : [divider, ...msgs, divider]).map(item => ({
       type: 'local',
       time: new Date().getTime(),
       msg: item,
     }))
   )
   mergeMsgs()
+}
+
+export const startListenUsersInRoom = () => {
+  getUsersInRoomRef().on('child_removed', snap => {
+    pushLocalMsg([snap.key + ' left.'], true)
+  })
+  getUsersInRoomRef().on('child_changed', snap => {
+    pushLocalMsg([snap.key + ' enter the room.'], true)
+  })
+}
+export const stopListenUsersInRoom = () => {
+  getUsersInRoomRef().off('child_removed')
+  getUsersInRoomRef().off('child_changed')
 }
 
 export const msgSetup = () => {
@@ -87,12 +100,13 @@ export const msgSetup = () => {
   ])
   startListenMsg()
   checkIn()
+  startListenUsersInRoom()
 }
-
 export const changeRoom = newRoom => {
   history.pushState(null, '', '/' + newRoom)
 
   getCurrentRoomRef().off()
+  stopListenUsersInRoom()
   currentRoom = newRoom || 'public'
   msgSetup()
 }
