@@ -2,7 +2,7 @@ import firebase from 'firebase/app'
 import { getName } from './user'
 import { defaultRoom } from '../utils/constants'
 
-let currentRoom = defaultRoom
+let currentRoom = window.location.pathname.substring(1) || defaultRoom
 const currCbs = {}
 const localMsg = []
 const remoteMsg = []
@@ -58,13 +58,8 @@ export const startListenMsg = () => {
     }
   })
 }
-export const changeRoom = newRoom => {
-  getCurrentRoomRef().off()
-  currentRoom = newRoom
-  startListenMsg()
-}
 
-export const getCurrentRoom = () => currentRoom
+export const getCurrentRoom = () => currentRoom || 'public'
 
 const divider = '=========='
 export const pushLocalMsg = (msgs = []) => {
@@ -78,11 +73,25 @@ export const pushLocalMsg = (msgs = []) => {
   mergeMsgs()
 }
 
-pushLocalMsg([
-  'Welcome to Chattery!',
-  'type /set-name (name) to change your name',
-  'type /h for list of cmd',
-  'or /h (cmd) for specific descriptions of a cmd',
-  'More will come later!',
-])
-startListenMsg()
+const msgSetup = () => {
+  remoteMsg.splice(0, remoteMsg.length)
+  localMsg.splice(0, localMsg.length)
+  pushLocalMsg([
+    'Welcome to Chattery!',
+    'type /set-name (name) to change your name',
+    'type /h for list of cmd',
+    'or /h (cmd) for specific descriptions of a cmd',
+    'More will come later!',
+  ])
+  startListenMsg()
+}
+
+export const changeRoom = newRoom => {
+  history.pushState(null, '', '/' + newRoom)
+
+  getCurrentRoomRef().off()
+  currentRoom = newRoom || 'public'
+  msgSetup()
+}
+
+msgSetup()

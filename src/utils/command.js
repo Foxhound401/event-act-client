@@ -1,4 +1,5 @@
 import { setName } from '../firebase/user'
+import { changeRoom, getCurrentRoom } from '../firebase/chat'
 
 const CMD_LIST = {
   SET_NAME: {
@@ -20,9 +21,19 @@ const CMD_LIST = {
       'example, to get directions for set-name cmd, type: /h set-name',
       '',
       'List of available command:',
-      ' - set-name',
+      ' + set-name  -  Change current name.',
+      ' + go  - leave and go to a different room.',
+      ' + room  - show name of current room',
       'type /h without any suffix to show this page again.',
     ],
+  },
+  GO: {
+    prefix: ['go'],
+    help: ['Syntax: /go (room name)', 'Leave and go to a different room'],
+  },
+  ROOM: {
+    prefix: ['room'],
+    help: ['Syntax: /room', 'Show the name of current room'],
   },
 }
 
@@ -70,6 +81,14 @@ export const processCmd = async (input = '') => {
       return getRes(null, CMD_LIST[foundCmd].help)
     }
     return getRes(false, ['command not found'])
+  }
+  if (CMD_LIST.GO.prefix.indexOf(prefix) > -1) {
+    const room = input.substring(prefix.length + 1).trim()
+    changeRoom(room)
+    return getRes(true, ['Go to room: ' + getCurrentRoom()])
+  }
+  if (CMD_LIST.ROOM.prefix.indexOf(prefix) > -1) {
+    return getRes(true, ['Current room: ' + getCurrentRoom()])
   }
   return false
 }

@@ -1,8 +1,5 @@
 import firebase from 'firebase/app'
 import generateName from 'sillyname'
-import { defaultRoom } from '../utils/constants'
-
-import { getCurrentRoom } from './chat'
 
 let currentName = ''
 const currCbs = {}
@@ -22,8 +19,6 @@ const trigger = () =>
   Object.keys(currCbs).forEach(key => currCbs[key] && currCbs[key](currentName))
 
 export const checkAvailability = async newName => {
-  const room = getCurrentRoom ? getCurrentRoom() : defaultRoom
-
   const res = await Promise.all([
     firebase
       .database()
