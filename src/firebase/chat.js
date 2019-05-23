@@ -78,6 +78,8 @@ const msgSetup = () => {
   localMsg.splice(0, localMsg.length)
   pushLocalMsg([
     'Welcome to Chattery!',
+    'Default room is public',
+    'type /go (room name) to go to a different room',
     'type /set-name (name) to change your name',
     'type /h for list of cmd',
     'or /h (cmd) for specific descriptions of a cmd',
