@@ -2,7 +2,9 @@ import firebase from 'firebase/app'
 import { getName, checkIn, getUsersInRoomRef } from './user'
 import { defaultRoom } from '../utils/constants'
 
-let currentRoom = window.location.pathname.substring(1) || defaultRoom
+let currentRoom = encodeURI(
+  window.location.pathname.substring(1) || defaultRoom
+).toLowerCase()
 const currCbs = {}
 const localMsg = []
 const remoteMsg = []
@@ -107,6 +109,6 @@ export const changeRoom = newRoom => {
 
   getCurrentRoomRef().off()
   stopListenUsersInRoom()
-  currentRoom = newRoom || 'public'
+  currentRoom = encodeURI(newRoom || 'public').toLowerCase()
   msgSetup()
 }
