@@ -1,5 +1,5 @@
 import firebase from 'firebase/app'
-import { getName } from './user'
+import { getName, checkIn } from './user'
 import { defaultRoom } from '../utils/constants'
 
 let currentRoom = window.location.pathname.substring(1) || defaultRoom
@@ -73,7 +73,7 @@ export const pushLocalMsg = (msgs = []) => {
   mergeMsgs()
 }
 
-const msgSetup = () => {
+export const msgSetup = () => {
   remoteMsg.splice(0, remoteMsg.length)
   localMsg.splice(0, localMsg.length)
   pushLocalMsg([
@@ -86,6 +86,7 @@ const msgSetup = () => {
     'More will come later!',
   ])
   startListenMsg()
+  checkIn()
 }
 
 export const changeRoom = newRoom => {
@@ -95,5 +96,3 @@ export const changeRoom = newRoom => {
   currentRoom = newRoom || 'public'
   msgSetup()
 }
-
-msgSetup()

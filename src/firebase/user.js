@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import generateName from 'sillyname'
+import { getCurrentRoom, msgSetup } from './chat'
 
 let currentName = ''
 const currCbs = {}
@@ -43,7 +44,10 @@ export const checkIn = () => {
   return firebase
     .database()
     .ref(`status/${currentName}`)
-    .set(firebase.database.ServerValue.TIMESTAMP)
+    .set({
+      room: getCurrentRoom(),
+      time: firebase.database.ServerValue.TIMESTAMP,
+    })
 }
 export const checkOff = () => {
   if (currentName)
@@ -76,6 +80,7 @@ export const createName = async () => {
   const newName = generateName() + ' ' + dateStr.substr(dateStr.length - 4)
   try {
     if (await setName(newName, true)) {
+      msgSetup()
       return newName
     }
   } catch (e) {
