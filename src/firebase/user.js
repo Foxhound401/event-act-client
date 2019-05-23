@@ -92,3 +92,19 @@ export const createName = async () => {
 createName()
 
 export const getName = () => currentName
+
+export const getUsersInRoomRef = () =>
+  firebase
+    .database()
+    .ref(`status`)
+    .orderByChild('room')
+    .equalTo(getCurrentRoom())
+
+export const getUsersInRoom = () => {
+  return getUsersInRoomRef()
+    .once('value')
+    .then(snap => {
+      const val = snap.val()
+      return val && Object.keys(val)
+    })
+}

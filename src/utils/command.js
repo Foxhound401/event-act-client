@@ -1,4 +1,4 @@
-import { setName } from '../firebase/user'
+import { setName, getUsersInRoom } from '../firebase/user'
 import { changeRoom, getCurrentRoom } from '../firebase/chat'
 
 const CMD_LIST = {
@@ -23,7 +23,8 @@ const CMD_LIST = {
       'List of available command:',
       ' + set-name  -  Change current name.',
       ' + go  - leave and go to a different room.',
-      ' + room  - show name of current room',
+      ' + room  - show name of current room.',
+      ' + users  - List name of all user in current room.',
       'type /h without any suffix to show this page again.',
     ],
   },
@@ -34,6 +35,10 @@ const CMD_LIST = {
   ROOM: {
     prefix: ['room'],
     help: ['Syntax: /room', 'Show the name of current room'],
+  },
+  USERS: {
+    prefix: ['users'],
+    help: ['Syntax: /users', 'List name of all user in current room.'],
   },
 }
 
@@ -89,6 +94,15 @@ export const processCmd = async (input = '') => {
   }
   if (CMD_LIST.ROOM.prefix.indexOf(prefix) > -1) {
     return getRes(true, ['Current room: ' + getCurrentRoom()])
+  }
+  if (CMD_LIST.USERS.prefix.indexOf(prefix) > -1) {
+    const users = await getUsersInRoom()
+    return getRes(true, [
+      'Users in room ' + getCurrentRoom() + ':',
+      ...(!users || users.length === 0
+        ? ['No user found']
+        : users.map(item => ' + ' + item)),
+    ])
   }
   return false
 }
