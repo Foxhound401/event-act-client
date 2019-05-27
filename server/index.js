@@ -6,6 +6,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const compression = require('compression')
 
+const { connectDb } = require('./mongoose')
+
 dotenv.config({ silent: true })
 
 // instantiate express
@@ -23,7 +25,10 @@ app.get('*', (req, res) => {
 })
 
 const serverPort = process.env.PORT || 3000
-app.listen(serverPort)
+
+connectDb().then(() => {
+  app.listen(serverPort)
+})
 console.log(
   `Express server @ http://localhost:${serverPort} (${
     PRODUCTION ? 'production' : 'development'
