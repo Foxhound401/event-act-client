@@ -66,9 +66,12 @@ export const getCurrentRoom = () => currentRoom || 'public'
 const divider = '=========='
 export const pushLocalMsg = (msgs = [], noDivider) => {
   localMsg.push(
-    ...(noDivider ? msgs : [divider, ...msgs, divider]).map(item => ({
+    ...(noDivider ? msgs : [divider, ...msgs, divider]).map((item, index) => ({
       type: 'local',
-      time: new Date().getTime(),
+      // time: new Date().getTime() + index,
+      time: remoteMsg[remoteMsg.length - 1]
+        ? remoteMsg[remoteMsg.length - 1].time + index
+        : new Date().getTime() - 30000 + index,
       msg: item,
     }))
   )
