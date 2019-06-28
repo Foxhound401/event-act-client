@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev:client": "parcel watch ./src/index.html --out-dir dist",
-    "build:client": "rm -rf dist && parcel build ./src/index.html --no-source-maps --out-dir dist",
+    "build:client": "rm -rf dist && parcel build ./src/index.html --no-source-maps --out-dir dist --public-url ./",
     "start": "node server/index.js",
     "dev:server": "nodemon --watch ./server --exec node ./server/index.js",
     "prebuild": "rm -rf dist",
