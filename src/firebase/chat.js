@@ -8,23 +8,9 @@ let currentRoom = encodeURI(
 const currCbs = {}
 const localMsg = []
 const remoteMsg = []
-let mergedMsg = []
 
 const trigger = () =>
-  Object.keys(currCbs).forEach(key => currCbs[key] && currCbs[key](mergedMsg))
-
-const mergeMsgs = () => {
-  if (remoteMsg.length === 0) mergedMsg = localMsg
-  else if (localMsg.length === 0) mergedMsg = remoteMsg
-  else {
-    mergedMsg = [...remoteMsg, ...localMsg].sort((a, b) => {
-      if (a.time - b.time > 0) return 1
-      if (a.time - b.time < 0) return -1
-      return 0
-    })
-  }
-  trigger()
-}
+  Object.keys(currCbs).forEach(key => currCbs[key] && currCbs[key](remoteMsg))
 
 export const getCurrentRoomRef = () =>
   firebase.database().ref(`chat/${currentRoom}`)
@@ -43,7 +29,7 @@ export const listenMsg = cb => {
     newKey = new Date().getTime()
   }
   currCbs[newKey] = cb
-  cb(mergedMsg)
+  cb(remoteMsg)
   return () => delete currCbs[newKey]
 }
 
@@ -56,7 +42,7 @@ export const startListenMsg = () => {
         type: 'remote',
         ...roomMsg,
       })
-      mergeMsgs()
+      trigger()
     }
   })
 }
@@ -65,7 +51,7 @@ export const getCurrentRoom = () => currentRoom || 'public'
 
 const divider = '=========='
 export const pushLocalMsg = (msgs = [], noDivider) => {
-  localMsg.push(
+  remoteMsg.push(
     ...(noDivider ? msgs : [divider, ...msgs, divider]).map((item, index) => ({
       type: 'local',
       // time: new Date().getTime() + index,
@@ -75,7 +61,7 @@ export const pushLocalMsg = (msgs = [], noDivider) => {
       msg: item,
     }))
   )
-  mergeMsgs()
+  trigger()
 }
 
 export const startListenUsersInRoom = () => {
