@@ -33,10 +33,10 @@ export const listenMsg = cb => {
   return () => delete currCbs[newKey]
 }
 
-export const startListenMsg = () => {
+export const startListenMsg = startTime => {
   getCurrentRoomRef().on('child_added', data => {
     const roomMsg = data.val()
-    if (roomMsg) {
+    if (roomMsg.time > startTime) {
       remoteMsg.push({
         key: data.key,
         type: 'remote',
@@ -89,7 +89,7 @@ export const msgSetup = () => {
     'or /h (cmd) for specific descriptions of a cmd',
     'More will come later!',
   ])
-  startListenMsg()
+  startListenMsg(Date.now())
   checkIn()
   startListenUsersInRoom()
 }
