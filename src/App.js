@@ -47,6 +47,7 @@ const styles = () => ({
     flex: 1,
     display: 'flex',
     backgroundColor: colors.whiteLilac,
+    minHeight: 100,
   },
   inputContainer: {
     display: 'flex',
