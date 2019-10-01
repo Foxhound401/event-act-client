@@ -1,5 +1,5 @@
 import firebase from 'firebase/app'
-import { getName, checkIn, getUsersInRoomRef } from './user'
+import { getCurrentName, checkIn, getUsersInRoomRef } from './user'
 import { defaultRoom } from '../utils/constants'
 
 let currentRoom = encodeURI(
@@ -17,7 +17,7 @@ export const getCurrentRoomRef = () =>
 
 export const sendMsg = msg => {
   return getCurrentRoomRef().push({
-    user: getName(),
+    user: getCurrentName(),
     msg,
     time: firebase.database.ServerValue.TIMESTAMP,
   })
@@ -84,7 +84,7 @@ export const msgSetup = () => {
     'Welcome to Chattery!',
     'Default room is public',
     'type /go (room name) to go to a different room',
-    'type /set-name (name) to change your name',
+    'type /name (name) to change your name',
     'type /h for list of cmd',
     'or /h (cmd) for specific descriptions of a cmd',
     'More will come later!',

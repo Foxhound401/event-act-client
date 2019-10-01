@@ -6,10 +6,29 @@ import colors from './utils/colors'
 import './utils/statusMonitor'
 import UserInput from './components/UserInput'
 import ChatList from './components/ChatList'
+import { listenUserAuth } from './firebase/auth'
+import { msgSetup } from './firebase/chat'
+import LoginModal from './components/LoginModal'
 
 import './App.css'
 
 class App extends Component {
+  state = {
+    user: null,
+    openNameModal: false,
+  }
+
+  componentDidMount() {
+    listenUserAuth(user => {
+      if (user) {
+        this.setState({ user, openNameModal: false })
+        msgSetup()
+      } else {
+        this.setState({ user: null, openNameModal: true })
+      }
+    })
+  }
+
   forceScroll = true
 
   setForceScroll = val => {
@@ -20,20 +39,26 @@ class App extends Component {
 
   render() {
     const { classes } = this.props
+    const { user, openNameModal } = this.state
     return (
       <div className={classes.container}>
         <CssBaseline />
         <Grid container direction="column" className={classes.gridContainer}>
           <Grid className={classes.chatContentContainer} item xs={12}>
-            <ChatList
-              getForceScroll={this.getForceScroll}
-              setForceScroll={this.setForceScroll}
-            />
+            {user ? (
+              <ChatList
+                getForceScroll={this.getForceScroll}
+                setForceScroll={this.setForceScroll}
+              />
+            ) : (
+              false
+            )}
           </Grid>
           <Grid className={classes.inputContainer} item xs={12}>
-            <UserInput setForceScroll={this.setForceScroll} />
+            {user ? <UserInput setForceScroll={this.setForceScroll} /> : false}
           </Grid>
         </Grid>
+        <LoginModal open={openNameModal} />
       </div>
     )
   }

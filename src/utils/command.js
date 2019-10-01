@@ -3,9 +3,9 @@ import { changeRoom, getCurrentRoom } from '../firebase/chat'
 
 const CMD_LIST = {
   SET_NAME: {
-    prefix: ['set-name'],
+    prefix: ['name'],
     help: [
-      'Syntax: /set-name (name)',
+      'Syntax: /name (name)',
       '',
       'Result of name changing will be displayed along with reasons in case of reject',
       '',
@@ -18,10 +18,10 @@ const CMD_LIST = {
     prefix: ['help', 'h'],
     help: [
       'Syntax: /h (cmd) | /help (cmd)',
-      'example, to get directions for set-name cmd, type: /h set-name',
+      'example, to get directions for name cmd, type: /h name',
       '',
       'List of available command:',
-      ' + set-name  -  Change current name.',
+      ' + name  -  Change current name.',
       ' + go  - leave and go to a different room.',
       ' + room  - show name of current room.',
       ' + users  - List name of all user in current room.',

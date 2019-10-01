@@ -1,8 +1,8 @@
 import firebase from 'firebase/app'
-import generateName from 'sillyname'
-import { getCurrentRoom, msgSetup } from './chat'
+import { getCurrentRoom } from './chat'
 
-let currentName = ''
+export const getCurrentName = () =>
+  firebase.auth().currentUser && firebase.auth().currentUser.displayName
 const currCbs = {}
 let lastChangeName
 
@@ -12,12 +12,14 @@ export const listenName = cb => {
     newKey = new Date().getTime()
   }
   currCbs[newKey] = cb
-  cb(currentName)
+  cb(getCurrentName())
   return () => delete currCbs[newKey]
 }
 
 const trigger = () =>
-  Object.keys(currCbs).forEach(key => currCbs[key] && currCbs[key](currentName))
+  Object.keys(currCbs).forEach(
+    key => currCbs[key] && currCbs[key](getCurrentName())
+  )
 
 export const checkAvailability = async newName => {
   const res = await Promise.all([
@@ -41,24 +43,37 @@ export const checkAvailability = async newName => {
 }
 
 export const checkIn = () => {
-  return firebase
-    .database()
-    .ref(`status/${currentName}`)
-    .set({
-      room: getCurrentRoom(),
-      time: firebase.database.ServerValue.TIMESTAMP,
-    })
-}
-export const checkOff = () => {
-  if (currentName)
+  if (getCurrentName())
     return firebase
       .database()
-      .ref(`status/${currentName}`)
+      .ref(`status/${getCurrentName()}`)
+      .set({
+        room: getCurrentRoom(),
+        uid: firebase.auth().currentUser.uid,
+        time: firebase.database.ServerValue.TIMESTAMP,
+      })
+}
+export const checkOff = () => {
+  if (getCurrentName())
+    return firebase
+      .database()
+      .ref(`status/${getCurrentName()}`)
+      .set({
+        uid: firebase.auth().currentUser.uid,
+        time: firebase.database.ServerValue.TIMESTAMP,
+      })
+}
+export const removeName = () => {
+  if (getCurrentName())
+    return firebase
+      .database()
+      .ref(`status/${getCurrentName()}`)
       .remove()
 }
 
 export const setName = async (manualName, first) => {
-  if (currentName === manualName) throw new Error('You already has that name')
+  if (getCurrentName() === manualName)
+    throw new Error('You already has that name')
   if (
     lastChangeName &&
     new Date().getTime() - lastChangeName.getTime() <= 60000
@@ -66,32 +81,16 @@ export const setName = async (manualName, first) => {
     throw new Error('Must wait at least 1 min between name changing.')
   if (await checkAvailability(manualName)) {
     if (!first) lastChangeName = new Date()
-    checkOff()
-    currentName = manualName
-    checkIn()
+    removeName()
+    await firebase.auth().currentUser.updateProfile({
+      displayName: manualName,
+    })
+    await checkIn()
     trigger()
-    return currentName
+    return getCurrentName()
   }
   throw new Error('Name being used. Plz choose another one.')
 }
-
-export const createName = async () => {
-  const dateStr = Date.now().toString()
-  const newName = generateName() + ' ' + dateStr.substr(dateStr.length - 4)
-  try {
-    if (await setName(newName, true)) {
-      msgSetup()
-      return newName
-    }
-  } catch (e) {
-    console.error(e)
-  }
-  return createName()
-}
-
-createName()
-
-export const getName = () => currentName
 
 export const getUsersInRoomRef = () =>
   firebase

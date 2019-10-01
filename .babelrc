@@ -3,13 +3,11 @@
     [
       "@babel/preset-env",
       {
-        "targets": {
-          "esmodules": true,
-        },
-        "useBuiltIns": "usage",
-      },
+        "targets": "> 0.25%, not dead",
+        "useBuiltIns": "usage"
+      }
     ],
-    "@babel/preset-react",
+    "@babel/preset-react"
   ],
   "plugins": [
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
