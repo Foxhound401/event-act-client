@@ -1,86 +1,39 @@
-import React, { Component } from 'react'
+import React from 'react'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { withStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
-import colors from './utils/colors'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import './utils/statusMonitor'
-import UserInput from './components/UserInput'
-import ChatList from './components/ChatList'
-import { listenUserAuth } from './firebase/auth'
-import { msgSetup } from './firebase/chat'
-import LoginModal from './components/LoginModal'
-
+import Loading from './components/Loading'
 import './App.css'
 
-class App extends Component {
-  state = {
-    user: null,
-    openNameModal: false,
-  }
+const withSuspense = Component => {
+  return props => (
+    <React.Suspense fallback={Loading}>
+      <Component {...props} />
+    </React.Suspense>
+  )
+}
+const ChatRoom = withSuspense(React.lazy(() => import('./pages/ChatRoom')))
 
-  componentDidMount() {
-    listenUserAuth(user => {
-      if (user) {
-        this.setState({ user, openNameModal: false })
-        msgSetup()
-      } else {
-        this.setState({ user: null, openNameModal: true })
-      }
-    })
-  }
-
-  forceScroll = true
-
-  setForceScroll = val => {
-    this.forceScroll = val
-  }
-
-  getForceScroll = () => this.forceScroll
-
-  render() {
-    const { classes } = this.props
-    const { user, openNameModal } = this.state
-    return (
-      <div className={classes.container}>
-        <CssBaseline />
-        <Grid container direction="column" className={classes.gridContainer}>
-          <Grid className={classes.chatContentContainer} item xs={12}>
-            {user ? (
-              <ChatList
-                getForceScroll={this.getForceScroll}
-                setForceScroll={this.setForceScroll}
-              />
-            ) : (
-              false
-            )}
-          </Grid>
-          <Grid className={classes.inputContainer} item xs={12}>
-            {user ? <UserInput setForceScroll={this.setForceScroll} /> : false}
-          </Grid>
-        </Grid>
-        <LoginModal open={openNameModal} />
-      </div>
-    )
-  }
+const App = ({ classes }) => {
+  return (
+    <div className={classes.container}>
+      <CssBaseline />
+      <Router>
+        <Switch>
+          <Route path="/chat">
+            <ChatRoom />
+          </Route>
+          <Route path="/">
+            <h5>HOME</h5>
+            <Link to="/chat">CHat</Link>
+          </Route>
+        </Switch>
+      </Router>
+    </div>
+  )
 }
 
-const styles = () => ({
-  gridContainer: {
-    height: '100vh',
-  },
-  chatContentContainer: {
-    flex: 1,
-    display: 'flex',
-    backgroundColor: colors.whiteLilac,
-    minHeight: 100,
-  },
-  inputContainer: {
-    display: 'flex',
-    height: '50px',
-    flexBasis: 'unset',
-    backgroundColor: colors.geyser,
-    borderTop: colors.manatee + ' solid 2px',
-  },
-})
+const styles = () => ({})
 
 export default withStyles(styles)(App)

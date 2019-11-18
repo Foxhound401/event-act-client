@@ -10,6 +10,8 @@ class ChatList extends Component {
     chatMessages: [],
   }
 
+  forceScroll = true
+
   componentDidMount() {
     listenMsg(mergedMsgs => {
       if (mergedMsgs.length > 0) {
@@ -19,12 +21,11 @@ class ChatList extends Component {
           },
           () => {
             const elem = document.getElementById('chat-rows')
-            const { getForceScroll, setForceScroll } = this.props
             if (
-              getForceScroll() ||
+              this.forceScroll ||
               elem.scrollHeight - elem.clientHeight - elem.scrollTop < 350
             ) {
-              if (getForceScroll()) setForceScroll(false)
+              if (this.forceScroll) this.forceScroll = false
               elem.scrollTop = elem.scrollHeight
             }
           }
