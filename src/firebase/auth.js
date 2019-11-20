@@ -1,8 +1,10 @@
 import firebase from 'firebase/app'
 
-export const isLoggedIn = () => {
-  return !!firebase.auth().currentUser
+export const getCurrentUser = () => firebase.auth().currentUser
+export const isLoggedIn = excludeAnon => {
+  return !!getCurrentUser() && (!excludeAnon || !getCurrentUser().isAnonymous)
 }
+
 export const logout = () => {
   return firebase.auth().signOut()
 }
@@ -22,7 +24,30 @@ export const listenUserAuth = cb => {
 }
 
 export const setName = name => {
-  firebase.auth().currentUser.updateProfile({
+  getCurrentUser().updateProfile({
     displayName: name,
   })
 }
+
+firebase
+  .auth()
+  .getRedirectResult()
+  .then(result => {
+    // The signed-in user info.
+    const { user } = result
+    if (user) console.log('success', user)
+  })
+  .catch(error => {
+    // Handle Errors here.
+    const errorCode = error.code
+    const errorMessage = error.message
+    // The email of the user's account used.
+    const { email, credential } = error
+    console.error('error ===')
+    console.log('errorCode', errorCode)
+    console.log('errorMessage', errorMessage)
+    console.log('email', email)
+    console.log('credential', credential)
+    console.error('error end ===')
+    // ...
+  })
