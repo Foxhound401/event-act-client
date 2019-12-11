@@ -1,8 +1,8 @@
-import app from '@firebase/app'
-import '@firebase/auth'
-import '@firebase/database'
-import '@firebase/firestore'
-import 'firebase/analytics'
+const firebase = require('firebase')
+// import '@firebase/auth'
+// import '@firebase/database'
+// import '@firebase/firestore'
+// import 'firebase/analytics'
 
 const config = {
   apiKey: 'AIzaSyB7XUK6xrt_pLFqAkgNitMn9cMgkq8F6rg',
@@ -15,7 +15,7 @@ const config = {
   measurementId: 'G-CXDN47TL3J',
 }
 
-app.initializeApp(config)
-app.analytics()
+const app = firebase.initializeApp(config)
+// app.analytics()
 
-export default app
+module.exports = app

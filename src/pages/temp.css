@@ -1,0 +1,10 @@
+.login-field {
+  -webkit-transition: all 0.5s linear;
+  -moz-transition: all 0.5s linear;
+  -o-transition: all 0.5s linear;
+  transition: all 0.5s linear;
+}
+
+.login-field.hide {
+  height: 0;
+}

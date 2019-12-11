@@ -1,11 +1,18 @@
 import React from 'react'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { withStyles } from '@material-ui/core/styles'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from 'react-router-dom'
 import Loading from './components/Loading'
 import PrivateRoute from './components/PrivateRoute'
 import './utils/statusMonitor'
 import './App.css'
+import './firebase/auth'
 
 const withSuspense = Component => {
   return props => (
@@ -14,7 +21,7 @@ const withSuspense = Component => {
     </React.Suspense>
   )
 }
-const ChatRoom = withSuspense(React.lazy(() => import('./pages/ChatRoom')))
+const Game = withSuspense(React.lazy(() => import('./pages/Game')))
 const Login = withSuspense(React.lazy(() => import('./pages/Login')))
 
 const App = ({ classes }) => {
@@ -23,18 +30,21 @@ const App = ({ classes }) => {
       <CssBaseline />
       <Router>
         <Switch>
-          <Route path="/chat">
-            <ChatRoom />
-          </Route>
+          <PrivateRoute path="/game">
+            <Game />
+          </PrivateRoute>
           <Route path="/login">
             <Login />
           </Route>
-          <PrivateRoute path="/dashboard">
+          {/* <PrivateRoute path="/dashboard">
             <h5>Dashboard</h5>
-          </PrivateRoute>
+          </PrivateRoute> */}
           <Route path="/">
-            <h5>HOME</h5>
-            <Link to="/chat">CHat</Link>
+            <Redirect
+              to={{
+                pathname: '/game',
+              }}
+            />
           </Route>
         </Switch>
       </Router>

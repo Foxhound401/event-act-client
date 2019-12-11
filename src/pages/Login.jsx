@@ -1,35 +1,28 @@
 import React from 'react'
-import firebase from '@firebase/app'
-import { useHistory, useLocation } from 'react-router-dom'
-import useIsLoggedIn from '../utils/hooks/useIsLoggedIn'
+import Button from '@material-ui/core/Button'
+import firebase from 'firebase/app'
+import { Redirect } from 'react-router-dom'
 import Loading from '../components/Loading'
 
+import useIsLoggedIn from '../utils/hooks/useIsLoggedIn'
+
 const provider = new firebase.auth.GoogleAuthProvider()
+const onLogin = () => firebase.auth().signInWithRedirect(provider)
 
-const LoginPage = () => {
-  const history = useHistory()
-  const location = useLocation()
-
-  const { from } = location.state || { from: { pathname: '/' } }
-
+const Login = () => {
   const isLoggedIn = useIsLoggedIn()
   if (isLoggedIn === null) return <Loading />
+
   if (isLoggedIn) {
-    history.replace(from)
-    return false
-  }
-  const login = () => {
-    // fakeAuth.authenticate(() => {
-    //   history.replace(from);
-    // });
-    firebase.auth().signInWithRedirect(provider)
+    return (
+      <Redirect
+        to={{
+          pathname: '/game',
+        }}
+      />
+    )
   }
 
-  return (
-    <div>
-      <p>You must log in to view the page at {from.pathname}</p>
-      <button onClick={login}>Log in</button>
-    </div>
-  )
+  return <Button onClick={onLogin}> LOGIN </Button>
 }
-export default LoginPage
+export default Login

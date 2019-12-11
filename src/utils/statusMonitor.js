@@ -1,4 +1,4 @@
-import { checkIn, checkOff } from '../firebase/user'
+// import { checkIn, checkOff } from '../firebase/user'
 
 // Set the name of the hidden property and the change event for visibility
 let hidden
@@ -20,9 +20,9 @@ let away = false
 
 function getTimeout() {
   return setTimeout(() => {
-    if (!away) {
-      checkIn && checkIn()
-    }
+    // if (!away) {
+    //   checkIn && checkIn()
+    // }
     checkInTimeout = getTimeout()
   }, 60000)
 }
@@ -45,4 +45,4 @@ if (typeof document.addEventListener === 'undefined' || hidden === undefined) {
   document.addEventListener(visibilityChange, handleVisibilityChange, false)
 }
 
-window.addEventListener('beforeunload', checkOff)
+// window.addEventListener('beforeunload', checkOff)
