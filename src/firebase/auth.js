@@ -43,11 +43,13 @@ firebase
     const errorMessage = error.message
     // The email of the user's account used.
     const { email, credential } = error
-    console.error('error ===')
-    console.log('errorCode', errorCode)
-    console.log('errorMessage', errorMessage)
-    console.log('email', email)
-    console.log('credential', credential)
-    console.error('error end ===')
+    console.log(
+      'error ===',
+      'errorCode: ' + errorCode,
+      'errorMessage: ' + errorMessage,
+      'email: ' + email,
+      'credential: ' + credential,
+      'error end ==='
+    )
     // ...
   })

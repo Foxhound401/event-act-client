@@ -48,8 +48,8 @@ const Tenant_interaction = {
           type: SECTION_TYPES.POLL,
           index: 2,
           title: 'string',
-          options: {},
-          result: {},
+          options: '{}',
+          result: '{}',
         },
         ux: GAME_UX.during_question,
         num_player: 1000,
@@ -83,7 +83,7 @@ const Tenant_interaction = {
       },
       display_controller: {
         controller_ux: CONTROLLER_UX.during_question,
-        next_item: {},
+        next_item: '{}',
         msg: 'string',
       },
       // input data
@@ -100,24 +100,24 @@ const Tenant_interaction = {
               _user_id: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
               _user_id1: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
             },
             _user_group_index2: {
               _user_id: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
               _user_id1: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
             },
           },
@@ -126,24 +126,24 @@ const Tenant_interaction = {
               _user_id: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
               _user_id1: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
             },
             _user_group_index2: {
               _user_id: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
               _user_id1: {
                 // onCreate
                 created_time: new Date().getTime(),
-                data: {} || 0,
+                data: '{}' || 0,
               },
             },
           },
@@ -191,7 +191,7 @@ const Tenant_interaction = {
             _section_index: {
               groups: {
                 _group_index: {
-                  answer: {}, // onCreate: func_check_answer
+                  answer: '{}', // onCreate: func_check_answer
                   finished_time: new Date().getTime(),
                 },
               },
@@ -208,7 +208,7 @@ const Tenant_interaction = {
         },
         game_control: {
           current_index: 1, // -1, 0, 1, 2, 3...
-          next_item: {},
+          next_item: '{}',
           num_items: 10,
           game_ux: GAME_UX.during_question,
           updated_time: new Date().getTime(), // prevent fast change < 1s

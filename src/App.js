@@ -13,6 +13,7 @@ import PrivateRoute from './components/PrivateRoute'
 import './utils/statusMonitor'
 import './App.css'
 import './firebase/auth'
+import './firebase/lesson'
 
 const withSuspense = Component => {
   return props => (
@@ -21,7 +22,8 @@ const withSuspense = Component => {
     </React.Suspense>
   )
 }
-const Game = withSuspense(React.lazy(() => import('./pages/Game')))
+const Lesson = withSuspense(React.lazy(() => import('./pages/Lesson')))
+const Main = withSuspense(React.lazy(() => import('./pages/Main')))
 const Login = withSuspense(React.lazy(() => import('./pages/Login')))
 
 const App = ({ classes }) => {
@@ -30,8 +32,11 @@ const App = ({ classes }) => {
       <CssBaseline />
       <Router>
         <Switch>
-          <PrivateRoute path="/game">
-            <Game />
+          <PrivateRoute path="/lesson">
+            <Lesson />
+          </PrivateRoute>
+          <PrivateRoute path="/main">
+            <Main />
           </PrivateRoute>
           <Route path="/login">
             <Login />
@@ -42,7 +47,7 @@ const App = ({ classes }) => {
           <Route path="/">
             <Redirect
               to={{
-                pathname: '/game',
+                pathname: '/main',
               }}
             />
           </Route>

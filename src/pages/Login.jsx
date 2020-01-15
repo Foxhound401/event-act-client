@@ -17,7 +17,7 @@ const Login = () => {
     return (
       <Redirect
         to={{
-          pathname: '/game',
+          pathname: '/main',
         }}
       />
     )

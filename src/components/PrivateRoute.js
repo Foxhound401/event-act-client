@@ -7,20 +7,19 @@ export default function PrivateRoute({ children, ...rest }) {
   const isLoggedIn = useIsLoggedIn()
   if (isLoggedIn === null) return <Loading />
   return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        isLoggedIn ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: '/login',
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
+    <Route {...rest}>
+      {isLoggedIn === null ? (
+        <Loading />
+      ) : isLoggedIn ? (
+        children
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/login',
+            state: { from: location },
+          }}
+        />
+      )}
+    </Route>
   )
 }
