@@ -2,11 +2,12 @@ import React from 'react'
 
 import DeckTemplate from './DeckTemplate'
 
-const PreviewCard = ({ data, next }) => {
+const PreviewCard = ({ data, next, prev }) => {
   return (
     <DeckTemplate
       keyExtractor={(c, i) => '0'}
       cards={[data]}
+      prev={prev}
       wrapperStyle={{
         textAlign: 'center',
       }}

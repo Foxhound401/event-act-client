@@ -4,7 +4,7 @@ import { snapToData } from '../../../firebase/lesson'
 import LoadingComp from '../../../components/LoadingComp'
 import DeckTemplate from './DeckTemplate'
 
-const WelcomeCard = ({ data, classes, next }) => {
+const WelcomeCard = ({ data, classes, next, prev }) => {
   const [skill, setSkill] = useState(null)
 
   useEffect(() => {
@@ -19,6 +19,7 @@ const WelcomeCard = ({ data, classes, next }) => {
     <DeckTemplate
       keyExtractor={() => '0'}
       cards={[data]}
+      prev={prev}
       dataRenderer={data => {
         return (
           <>

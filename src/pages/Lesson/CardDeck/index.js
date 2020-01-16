@@ -3,12 +3,13 @@ import Button from '@material-ui/core/Button'
 import InfoCard from './InfoCard'
 import DeckTemplate from './DeckTemplate'
 
-const CardDeck = ({ data, classes, next }) => {
+const CardDeck = ({ data, classes, next, prev }) => {
   const { cards, id } = data
   return (
     <DeckTemplate
       keyExtractor={(c, i) => id + '-' + i}
       cards={cards}
+      prev={prev}
       dataRenderer={(data, props) => {
         const { desc = [], button } = data
         const texts = Array.isArray(desc) ? desc : [desc]

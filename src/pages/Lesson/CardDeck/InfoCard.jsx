@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSpring, animated, interpolate } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 import { withStyles } from '@material-ui/core/styles'
@@ -27,14 +27,16 @@ function InfoCard({
   containerStyle = {},
   wrapperStyle = {},
   dataRenderer = () => false,
+  currentIndex,
 }) {
+  const [gone, setGone] = useState(false)
   const [props, set] = useSpring(() => ({
     ...to(index),
     from: from(index),
   })) // Create a bunch of springs using the helpers above
   // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
 
-  const slideOut = () => {
+  const slideOut = (triggerExit = true) => {
     set({
       x: 200 + window.innerWidth,
       rot: 100,
@@ -42,14 +44,27 @@ function InfoCard({
       delay: undefined,
       config: { friction: 50, tension: 200 },
     })
-    setTimeout(() => onExited && onExited(), 400)
+    if (triggerExit) setTimeout(() => onExited && onExited(), 400)
   }
+  const slideIn = () => {
+    set(to(index))
+  }
+
+  useEffect(() => {
+    if (currentIndex > index && !gone) {
+      slideOut(false)
+    } else if (currentIndex <= index) {
+      setGone(false)
+      slideIn()
+    }
+  }, [currentIndex])
 
   const bind = useDrag(({ down, movement: [mx], velocity }) => {
     if (disabled) return // We're only interested in changing spring-data for the current spring
     const trigger = Math.abs(mx) > 20 // If you flick hard enough it should trigger the card to fly out
     const dir = mx < 0 ? -1 : 1 // Direction should either point left or right
     const isGone = !down && trigger
+    setGone(isGone)
     const x = isGone ? (200 + window.innerWidth) * dir : down ? mx : 0 // When a card is gone it flys out left or right, otherwise goes back to zero
     const rot = mx / 100 + (isGone ? dir * 10 * velocity : 0) // How much the card tilts, flicking it harder makes it rotate faster
     const scale = down ? 1.1 : 1 // Active cards lift up a bit

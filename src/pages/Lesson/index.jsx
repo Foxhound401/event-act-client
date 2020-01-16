@@ -45,16 +45,16 @@ const LessonScreen = withRouter(({ location, history }) => {
     const { type } = card
     console.log(card)
     if (type === 'intro') {
-      return <WelcomeCard data={data} next={nextCard} />
+      return <WelcomeCard data={data} next={nextCard} prev={prevCard} />
     }
     if (type === 'preview') {
-      return <PreviewCard data={card} next={nextCard} />
+      return <PreviewCard data={card} next={nextCard} prev={prevCard} />
     }
     if (type === 'cards') {
-      return <Stack data={card} next={nextCard} />
+      return <Stack data={card} next={nextCard} prev={prevCard} />
     }
     if (type === 'activity') {
-      return <Activity data={card} next={nextCard} />
+      return <Activity data={card} next={nextCard} prev={prevCard} />
     }
     return false
   }
