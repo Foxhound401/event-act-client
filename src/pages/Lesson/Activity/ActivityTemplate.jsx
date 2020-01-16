@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import ActivityCard from './ActivityCard'
+import LessonContext from '../LessonContext'
 
 const styles = {
   container: {
@@ -30,27 +31,15 @@ const ActivityTemplate = ({
   cards,
   dataRenderer,
   classes,
-  next,
   cardStyles = {},
   containerStyle,
-  prev,
 }) => {
-  const [currentCard, setCurrentCard] = useState(0)
-  const currCard = cards[currentCard]
+  const { prev, next, currCardIndex, setCardIndex } = useContext(LessonContext)
+  const currCard = cards[currCardIndex]
   const onNext = () => {
-    return setCurrentCard(currentCard + 1)
+    return setCardIndex(currCardIndex + 1)
   }
 
-  useEffect(() => {
-    if (currentCard > cards.length - 1) {
-      setTimeout(() => {
-        next()
-      }, 500)
-    } else if (currentCard < 0) {
-      setCurrentCard(0)
-      prev()
-    }
-  }, [currentCard])
   return (
     <div className={classes.container} style={containerStyle}>
       <div className={classes.navContainer + ' ' + classes.exitContainer}>
@@ -59,8 +48,8 @@ const ActivityTemplate = ({
         </Button>
       </div>
       <ActivityCard
-        index={currentCard}
-        hide={currentCard > cards.length - 1}
+        index={currCardIndex}
+        hide={currCardIndex > cards.length - 1}
         data={currCard}
         onExited={onNext}
         dataRenderer={dataRenderer}

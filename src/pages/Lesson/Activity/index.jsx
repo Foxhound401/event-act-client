@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Button from '@material-ui/core/Button'
 
 import ActivityTemplate from './ActivityTemplate'
 import ActivityMultiChoices from './ActivityMultiChoices'
 
-const Stack = ({ data, classes, next, prev }) => {
+const Stack = ({ data, classes }) => {
   const { cards, id } = data
   return (
     <ActivityTemplate
@@ -57,8 +57,6 @@ const Stack = ({ data, classes, next, prev }) => {
           </div>
         )
       }}
-      next={next}
-      prev={prev}
     />
   )
 }

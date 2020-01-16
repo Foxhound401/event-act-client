@@ -1,5 +1,4 @@
 import Button from '@material-ui/core/Button'
-import firebase from 'firebase/app'
 import queryString from 'query-string'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
@@ -11,13 +10,14 @@ import PreviewCard from './CardDeck/PreviewCard'
 import Activity from './Activity'
 import { getLessonById, fetchCardsData } from '../../firebase/lesson'
 
-const path = 'lessons'
+import LessonContext from './LessonContext'
 
 const LessonScreen = withRouter(({ location, history }) => {
   const searchVal = queryString.parse(location.search)
   const { lessonId } = searchVal
 
   const [data, setData] = useState(null)
+  const [currSectIndex, setCurrSectIndex] = useState(0)
   const [currCardIndex, setCurrCardIndex] = useState(0)
   useEffect(() => {
     getLessonById(lessonId)
@@ -29,32 +29,59 @@ const LessonScreen = withRouter(({ location, history }) => {
       .catch(console.error)
   }, [])
 
+  const { cards: sects = [] } = data || {}
+  const currSect = sects[currSectIndex]
+
+  const nextSect = () => {
+    if (currSectIndex < sects.length - 1) {
+      setCurrSectIndex(currSectIndex + 1)
+      setCurrCardIndex(0)
+    }
+  }
+  const prevSect = () => {
+    if (currSectIndex > 0) {
+      const prevSec = sects[currSectIndex - 1]
+      const { type, cards } = prevSec
+      setCurrSectIndex(currSectIndex - 1)
+      if (type !== 'activity') {
+        setCurrCardIndex(cards ? cards.length - 1 : 0)
+      } else {
+        setCurrCardIndex(0)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (!currSect) return
+    const { cards } = currSect
+    if (
+      (cards && currCardIndex > cards.length - 1) ||
+      (!cards && currCardIndex > 0)
+    ) {
+      setTimeout(() => {
+        nextSect()
+      }, 500)
+    } else if (currCardIndex < 0) {
+      setCurrCardIndex(0)
+      prevSect()
+    }
+  }, [currCardIndex])
+
   if (!data) return <Loading />
 
-  const { cards = [] } = data
-  const currCard = cards[currCardIndex]
-
-  const nextCard = () =>
-    currCardIndex < cards.length - 1
-      ? setCurrCardIndex(currCardIndex + 1)
-      : false
-  const prevCard = () =>
-    currCardIndex > 0 ? setCurrCardIndex(currCardIndex - 1) : false
-
-  const RenderCard = card => {
-    const { type } = card
-    console.log(card)
+  const RenderCard = sect => {
+    const { type } = sect
     if (type === 'intro') {
-      return <WelcomeCard data={data} next={nextCard} prev={prevCard} />
+      return <WelcomeCard data={data} />
     }
     if (type === 'preview') {
-      return <PreviewCard data={card} next={nextCard} prev={prevCard} />
+      return <PreviewCard data={sect} />
     }
     if (type === 'cards') {
-      return <Stack data={card} next={nextCard} prev={prevCard} />
+      return <Stack data={sect} />
     }
     if (type === 'activity') {
-      return <Activity data={card} next={nextCard} prev={prevCard} />
+      return <Activity data={sect} />
     }
     return false
   }
@@ -70,7 +97,16 @@ const LessonScreen = withRouter(({ location, history }) => {
         flexDirection: 'column',
       }}
     >
-      {RenderCard(currCard)}
+      <LessonContext.Provider
+        value={{
+          currCardIndex,
+          setCardIndex: setCurrCardIndex,
+          next: nextSect,
+          prev: prevSect,
+        }}
+      >
+        {RenderCard(currSect)}
+      </LessonContext.Provider>
     </div>
   )
 })

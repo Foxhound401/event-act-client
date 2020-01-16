@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import InfoCard from './InfoCard'
+import LessonContext from '../LessonContext'
 
 const styles = {
   container: {
@@ -26,12 +27,10 @@ const DeckTemplate = ({
   cards,
   dataRenderer,
   classes,
-  next,
   cardStyles = {},
   containerStyle,
-  prev,
 }) => {
-  const [currentCard, setCurrentCard] = useState(0)
+  const { currCardIndex, setCardIndex } = useContext(LessonContext)
   const [transitioning, setTransitioning] = useState(false)
   const cardsRev = cards.slice().reverse()
 
@@ -46,7 +45,7 @@ const DeckTemplate = ({
       if (transitioning) return false
       setupTransitioning()
     }
-    return setCurrentCard(currentCard + 1)
+    return setCardIndex(currCardIndex + 1)
   }
 
   const onPrev = isClick => {
@@ -54,18 +53,8 @@ const DeckTemplate = ({
       if (transitioning) return false
       setupTransitioning()
     }
-    return setCurrentCard(currentCard - 1)
+    return setCardIndex(currCardIndex - 1)
   }
-  useEffect(() => {
-    if (currentCard > cards.length - 1) {
-      setTimeout(() => {
-        next()
-      }, 500)
-    } else if (currentCard < 0) {
-      setCurrentCard(0)
-      prev()
-    }
-  }, [currentCard])
   return (
     <div className={classes.container} style={containerStyle}>
       {cardsRev.map((card, i) => {
@@ -75,8 +64,8 @@ const DeckTemplate = ({
             key={keyExtractor(card, i)}
             index={index}
             data={card}
-            disabled={currentCard !== index}
-            currentIndex={currentCard}
+            disabled={currCardIndex !== index}
+            currentIndex={currCardIndex}
             onExited={onNext}
             dataRenderer={dataRenderer}
             containerStyle={cardStyles.container}
