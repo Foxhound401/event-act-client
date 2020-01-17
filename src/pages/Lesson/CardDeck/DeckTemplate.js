@@ -6,6 +6,7 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
 import InfoCard from './InfoCard'
 import LessonContext from '../LessonContext'
 import NavTop from './NavTop'
+import colors from '../../../utils/colors'
 
 const styles = {
   container: {
@@ -21,6 +22,11 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  icon: {
+    color: colors.white,
+    width: '8vw',
+    height: '8vw',
   },
 }
 
@@ -85,10 +91,10 @@ const DeckTemplate = ({
       </div>
       <div className={classes.navContainer}>
         <Button disabled={!prevCard} onClick={() => onPrev(true)}>
-          {prevCard ? <NavigateBeforeIcon /> : false}
+          {prevCard ? <NavigateBeforeIcon className={classes.icon} /> : false}
         </Button>
         <Button onClick={() => onNext(true)}>
-          <NavigateNextIcon />
+          <NavigateNextIcon className={classes.icon} />
         </Button>
       </div>
     </div>

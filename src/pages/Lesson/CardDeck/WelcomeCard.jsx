@@ -1,8 +1,54 @@
 import React, { useEffect, useState } from 'react'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 
 import { snapToData } from '../../../firebase/lesson'
 import LoadingComp from '../../../components/LoadingComp'
+import colors from '../../../utils/colors'
 import DeckTemplate from './DeckTemplate'
+
+const styles = {
+  container: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    textAlign: 'center',
+  },
+  imageContainer: {
+    width: '100%',
+    height: '35%',
+  },
+  image: {
+    objectFit: 'contain',
+    width: '100%',
+    height: '100%',
+  },
+  upperTextContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'inherit',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  skillText: {
+    fontWeight: 'bold',
+    fontSize: '2.2vh',
+  },
+  normalText: {
+    fontSize: '2vh',
+    color: colors.manatee,
+    marginBottom: 'unset',
+  },
+  divider: {
+    marginTop: '2vh',
+    marginBottom: '2vh',
+    width: '100%',
+    height: '0.3vh',
+    backgroundColor: colors.silver,
+  },
+}
 
 const WelcomeCard = ({ data, classes, next, prev }) => {
   const [skill, setSkill] = useState(null)
@@ -22,15 +68,35 @@ const WelcomeCard = ({ data, classes, next, prev }) => {
       prev={prev}
       dataRenderer={data => {
         return (
-          <>
-            <h3>{data.title}</h3>
-            <h5>Skill</h5>
-            <LoadingComp
-              isLoading={skill === null}
-              renderer={() => <sub>{skill.title || ''}</sub>}
-            />
-            <sub>by {data.by}</sub>
-          </>
+          <div className={classes.container}>
+            <div className={classes.imageContainer}>
+              <img
+                className={classes.image}
+                src="https://via.placeholder.com/150"
+                alt="lesson cover img"
+              ></img>
+            </div>
+            <div className={classes.upperTextContainer}>
+              <Typography variant="h4">{data.title}</Typography>
+              <div>
+                <Typography className={classes.skillText} variant="body1">
+                  SKILL
+                </Typography>
+                <LoadingComp
+                  isLoading={skill === null}
+                  renderer={() => (
+                    <Typography className={classes.normalText} variant="body1">
+                      {skill.title || ''}
+                    </Typography>
+                  )}
+                />
+              </div>
+            </div>
+            <div className={classes.divider} />
+            <Typography className={classes.normalText} variant="body1">
+              By {data.by}
+            </Typography>
+          </div>
         )
       }}
       wrapperStyle={{
@@ -41,4 +107,4 @@ const WelcomeCard = ({ data, classes, next, prev }) => {
   )
 }
 
-export default WelcomeCard
+export default withStyles(styles)(WelcomeCard)

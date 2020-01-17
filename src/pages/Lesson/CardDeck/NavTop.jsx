@@ -4,10 +4,11 @@ import Button from '@material-ui/core/Button'
 import ShareIcon from '@material-ui/icons/Share'
 import CloseIcon from '@material-ui/icons/Close'
 import LessonContext from '../LessonContext'
+import colors from '../../../utils/colors'
 
 const styles = {
   container: {
-    height: 40,
+    height: '8vh',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
@@ -21,15 +22,24 @@ const styles = {
     alignItems: 'center',
   },
   progWrapper: {
-    backgroundColor: 'grey',
+    backgroundColor: colors.mandy,
     borderRadius: 10,
-    height: 10,
+    height: '1.5vh',
     width: '100%',
     overflow: 'hidden',
   },
   prog: {
     height: '100%',
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
+  },
+  icon: {
+    color: colors.white,
+    width: '8vw',
+    height: '8vw',
+  },
+  button: {
+    width: '10vw',
+    padding: '1vw',
   },
 }
 
@@ -38,8 +48,8 @@ const NavTop = ({ classes }) => {
 
   return (
     <div className={classes.container}>
-      <Button onClick={onExitLesson}>
-        <CloseIcon />
+      <Button className={classes.button} onClick={onExitLesson}>
+        <CloseIcon className={classes.icon} />
       </Button>
       <div className={classes.progContainer}>
         <div className={classes.progWrapper}>
@@ -51,8 +61,8 @@ const NavTop = ({ classes }) => {
           ></div>
         </div>
       </div>
-      <Button onClick={onShare}>
-        <ShareIcon />
+      <Button className={classes.button} onClick={onShare}>
+        <ShareIcon className={classes.icon} />
       </Button>
     </div>
   )

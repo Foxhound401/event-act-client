@@ -1,4 +1,5 @@
 import React from 'react'
+import Typography from '@material-ui/core/Typography'
 
 import DeckTemplate from './DeckTemplate'
 
@@ -13,7 +14,7 @@ const PreviewCard = ({ data, next, prev }) => {
       }}
       dataRenderer={data => {
         const texts = Array.isArray(data.desc) ? data.desc : [data.desc]
-        return texts.map((t, index) => <p key={'card-text-' + index}>{t}</p>)
+        return texts.map((t, index) => <Typography variant="body1" key={'card-text-' + index}>{t}</Typography>)
       }}
       next={next}
     />

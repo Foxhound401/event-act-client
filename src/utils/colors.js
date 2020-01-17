@@ -39,4 +39,5 @@ export default {
   mandy: '#EE505C',
   wellRead: '#BA3131',
   coral: '#FC8156',
+  bittersweet: '#FD7461',
 }

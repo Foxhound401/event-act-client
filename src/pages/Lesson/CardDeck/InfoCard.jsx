@@ -3,15 +3,17 @@ import { useSpring, animated, interpolate } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 import { withStyles } from '@material-ui/core/styles'
 
+import colors from '../../../utils/colors'
+
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = i => ({
   x: 0,
-  y: i * 7,
+  y: i * (window.innerHeight / 90),
   scale: 1 - i * 0.01,
   rot: 0,
   delay: i * 50,
 })
-const from = () => ({ x: 0, rot: 0, scale: 1.5, y: -1000 })
+const from = () => ({ x: 0, rot: 0, scale: 1.5, y: -window.innerHeight * 2 })
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r, s) =>
   `perspective(1500px) rotateX(0deg) rotateY(${r /
@@ -38,7 +40,7 @@ function InfoCard({
 
   const slideOut = (triggerExit = true) => {
     set({
-      x: 200 + window.innerWidth,
+      x: window.innerWidth * 2,
       rot: 100,
       scale: 1.1,
       delay: undefined,
@@ -133,11 +135,11 @@ export default withStyles({
     height: '100%',
     // maxHeight: '300px',
     willChange: 'transform',
-    borderRadius: '10px',
+    borderRadius: '5vw',
     boxShadow:
       '0 12.5px 100px -10px rgba(50, 50, 73, 0.4), 0 10px 10px -10px rgba(50, 50, 73, 0.3)',
 
-    border: '1px solid grey',
+    border: '1px solid ' + colors.geyser,
     display: 'flex',
     flexDirection: 'column',
     padding: 20,

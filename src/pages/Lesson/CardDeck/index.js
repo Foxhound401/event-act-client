@@ -1,6 +1,29 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 import DeckTemplate from './DeckTemplate'
+import colors from '../../../utils/colors'
+
+const styles = {
+  textContainer: {
+    flex: 1,
+    overflowY: 'scroll',
+  },
+  buttonContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  button: {
+    padding: '1.5vh 8vw',
+    borderRadius: '10vh',
+    backgroundColor: colors.cinnabar,
+    color: colors.white,
+    fontSize: '2.2vh',
+    fontWeight: 'bold',
+  },
+}
 
 const CardDeck = ({ data, classes }) => {
   const { cards, id } = data
@@ -14,21 +37,26 @@ const CardDeck = ({ data, classes }) => {
 
         return (
           <>
-            {texts.map((t, index) => (
-              <p key={'card-text-' + props.key + '-' + index}>{t}</p>
-            ))}
+            <div className={classes.textContainer}>
+              {texts.map((t, index) => (
+                <Typography
+                  variant="body1"
+                  key={'card-text-' + props.key + '-' + index}
+                >
+                  {t}
+                </Typography>
+              ))}
+            </div>
             {button ? (
-              <Button
-                variant="contained"
-                style={{
-                  padding: 10,
-                  border: '1px solid black',
-                  borderRadius: 5,
-                }}
-                onClick={!props.disabled ? props.slideOut : undefined}
-              >
-                {button}
-              </Button>
+              <div className={classes.buttonContainer}>
+                <Button
+                  variant="contained"
+                  className={classes.button}
+                  onClick={!props.disabled ? props.slideOut : undefined}
+                >
+                  {button}
+                </Button>
+              </div>
             ) : (
               false
             )}
@@ -39,4 +67,4 @@ const CardDeck = ({ data, classes }) => {
   )
 }
 
-export default CardDeck
+export default withStyles(styles)(CardDeck)
