@@ -34,11 +34,8 @@ const ActivityTemplate = ({
   cardStyles = {},
   containerStyle,
 }) => {
-  const { prev, next, currCardIndex, setCardIndex } = useContext(LessonContext)
+  const { prev, next, currCardIndex, nextCard } = useContext(LessonContext)
   const currCard = cards[currCardIndex]
-  const onNext = () => {
-    return setCardIndex(currCardIndex + 1)
-  }
 
   return (
     <div className={classes.container} style={containerStyle}>
@@ -51,7 +48,7 @@ const ActivityTemplate = ({
         index={currCardIndex}
         hide={currCardIndex > cards.length - 1}
         data={currCard}
-        onExited={onNext}
+        onExited={nextCard}
         dataRenderer={dataRenderer}
         containerStyle={cardStyles.container}
       />

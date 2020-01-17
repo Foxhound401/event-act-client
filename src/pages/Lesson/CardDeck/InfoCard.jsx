@@ -6,10 +6,10 @@ import { withStyles } from '@material-ui/core/styles'
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = i => ({
   x: 0,
-  y: i * 5,
-  scale: 1,
+  y: i * 7,
+  scale: 1 - i * 0.01,
   rot: 0,
-  delay: i * 100,
+  delay: i * 50,
 })
 const from = () => ({ x: 0, rot: 0, scale: 1.5, y: -1000 })
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
@@ -31,8 +31,8 @@ function InfoCard({
 }) {
   const [gone, setGone] = useState(false)
   const [props, set] = useSpring(() => ({
-    ...to(index),
-    from: from(index),
+    ...to(index - currentIndex),
+    from: from(index - currentIndex),
   })) // Create a bunch of springs using the helpers above
   // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
 
@@ -47,7 +47,7 @@ function InfoCard({
     if (triggerExit) setTimeout(() => onExited && onExited(), 400)
   }
   const slideIn = () => {
-    set(to(index))
+    set(to(index - currentIndex))
   }
 
   useEffect(() => {
@@ -114,22 +114,24 @@ function InfoCard({
 export default withStyles({
   cardContainer: {
     position: 'absolute',
-    width: '100vw',
-    height: '100vh',
+    width: '100%',
+    height: '100%',
     willChange: 'transform',
     display: 'flex',
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
+    padding: 15,
+    paddingBottom: 30,
   },
   card: {
     backgroundColor: 'white',
     backgroundSize: 'auto 85%',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',
-    width: '45vh',
-    maxWidth: '300px',
-    height: '45vh',
-    maxHeight: '300px',
+    width: '100%',
+    // maxWidth: '300px',
+    height: '100%',
+    // maxHeight: '300px',
     willChange: 'transform',
     borderRadius: '10px',
     boxShadow:
@@ -138,6 +140,6 @@ export default withStyles({
     border: '1px solid grey',
     display: 'flex',
     flexDirection: 'column',
-    padding: 5,
+    padding: 20,
   },
 })(InfoCard)

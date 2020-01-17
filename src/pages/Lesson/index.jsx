@@ -32,10 +32,18 @@ const LessonScreen = withRouter(({ location, history }) => {
   const { cards: sects = [] } = data || {}
   const currSect = sects[currSectIndex]
 
+  const totalProg = sects.length > 0 ? sects[sects.length - 1].endProg : 1
+  const currentProg =
+    sects.length > 0
+      ? currSect.startProg + (currSect.type === 'cards' ? currCardIndex : 0)
+      : 0
+
   const nextSect = () => {
     if (currSectIndex < sects.length - 1) {
       setCurrSectIndex(currSectIndex + 1)
       setCurrCardIndex(0)
+    } else {
+      // TODO: SHOW END SCREEN
     }
   }
   const prevSect = () => {
@@ -48,6 +56,32 @@ const LessonScreen = withRouter(({ location, history }) => {
       } else {
         setCurrCardIndex(0)
       }
+    }
+  }
+
+  const nextCard = () => {
+    if (!currSect) return
+    const { cards } = currSect
+    if (
+      (cards && currCardIndex === cards.length - 1) ||
+      (!cards && currCardIndex === 0)
+    ) {
+      if (currSectIndex < sects.length - 1) {
+        setCurrCardIndex(currCardIndex + 1)
+      }
+      setTimeout(() => {
+        nextSect()
+      }, 500)
+    } else {
+      setCurrCardIndex(currCardIndex + 1)
+    }
+  }
+  const prevCard = () => {
+    if (!currSect) return
+    if (currCardIndex === 0) {
+      prevSect()
+    } else {
+      setCurrCardIndex(currCardIndex - 1)
     }
   }
 
@@ -69,8 +103,9 @@ const LessonScreen = withRouter(({ location, history }) => {
 
   if (!data) return <Loading />
 
-  const RenderCard = sect => {
+  const RenderSect = sect => {
     const { type } = sect
+    console.log(sect)
     if (type === 'intro') {
       return <WelcomeCard data={data} />
     }
@@ -90,7 +125,7 @@ const LessonScreen = withRouter(({ location, history }) => {
     <div
       style={{
         width: '100%',
-        height: '100%',
+        height: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -100,12 +135,16 @@ const LessonScreen = withRouter(({ location, history }) => {
       <LessonContext.Provider
         value={{
           currCardIndex,
-          setCardIndex: setCurrCardIndex,
-          next: nextSect,
+          nextCard,
+          prevCard:
+            currSectIndex === 0 && currCardIndex === 0 ? undefined : prevCard,
           prev: prevSect,
+          next: nextSect,
+          onExitLesson: () => history.push('/main'),
+          progress: currentProg / totalProg,
         }}
       >
-        {RenderCard(currSect)}
+        {RenderSect(currSect)}
       </LessonContext.Provider>
     </div>
   )

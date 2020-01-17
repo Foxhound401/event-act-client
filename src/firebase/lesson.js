@@ -52,12 +52,28 @@ export const getLessonById = id => {
 }
 
 export const fetchCardsData = (cardArr = []) => {
+  let progress = 0
   return Promise.all(
     cardArr.map(c => {
       if (c.constructor.name === 'DocumentReference') {
         // is ref
-        return c.get().then(snapToData)
+        return c
+          .get()
+          .then(snapToData)
+          .then(res => {
+            res.startProg = progress + 1
+            if (res.type === 'cards') {
+              progress += res.cards.length
+            } else {
+              progress++
+            }
+            res.endProg = progress
+            return res
+          })
       }
+      c.startProg = progress + 1
+      progress++
+      c.endProg = progress
       return Promise.resolve(c)
     })
   )
