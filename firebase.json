@@ -1,6 +1,7 @@
 {
   "hosting": {
     "public": "dist",
+    "site": "primer-client",
     "ignore": [
       "firebase.json",
       "**/.*",

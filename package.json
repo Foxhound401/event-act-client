@@ -9,7 +9,7 @@
     "prebuild": "rm -rf dist",
     "build:start": "npm run build && npm start",
     "start": "parcel ./src/index.html",
-    "deploy": "npm run build:client && firebase deploy --only hosting"
+    "deploy": "npm run build:client && firebase deploy --only hosting:primer-client"
   },
   "keywords": [
     "parcel",
