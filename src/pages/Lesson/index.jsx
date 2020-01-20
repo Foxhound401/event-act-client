@@ -126,7 +126,7 @@ const LessonScreen = withRouter(({ location, history }) => {
     <div
       style={{
         width: '100%',
-        height: '100vh',
+        height: '100%',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
