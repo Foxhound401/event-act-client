@@ -8,7 +8,6 @@ import colors from '../../../utils/colors'
 
 const styles = {
   container: {
-    height: '8vh',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',

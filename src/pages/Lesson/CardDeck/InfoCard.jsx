@@ -1,9 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { useSpring, animated, interpolate } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
-import { withStyles } from '@material-ui/core/styles'
-
+import {
+  withStyles,
+  createMuiTheme,
+  MuiThemeProvider,
+} from '@material-ui/core/styles'
 import colors from '../../../utils/colors'
+
+const theme = createMuiTheme({
+  typography: {
+    // fontFamily: 'Raleway, Arial',
+    h4: {
+      color: colors.bittersweet,
+      fontSize: '5vh',
+    },
+    body1: {
+      color: colors.bittersweet,
+      fontSize: '3.5vh',
+      marginBottom: '3vh',
+    },
+    useNextVariants: true,
+  },
+})
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = i => ({
@@ -103,11 +122,13 @@ function InfoCard({
           ...wrapperStyle,
         }}
       >
-        {dataRenderer(data, {
-          disabled,
-          slideOut,
-          key,
-        })}
+        <MuiThemeProvider theme={theme}>
+          {dataRenderer(data, {
+            disabled,
+            slideOut,
+            key,
+          })}
+        </MuiThemeProvider>
       </animated.div>
     </animated.div>
   )

@@ -2,7 +2,6 @@ import Button from '@material-ui/core/Button'
 import queryString from 'query-string'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 import Stack from './CardDeck'
 import Loading from '../../components/Loading'
@@ -13,22 +12,6 @@ import Activity from './Activity'
 import { getLessonById, fetchCardsData } from '../../firebase/lesson'
 
 import LessonContext from './LessonContext'
-
-const theme = createMuiTheme({
-  typography: {
-    // fontFamily: 'Raleway, Arial',
-    h4: {
-      color: colors.bittersweet,
-      fontSize: '5vh',
-    },
-    body1: {
-      color: colors.bittersweet,
-      fontSize: '3.5vh',
-      marginBottom: '3vh',
-    },
-    useNextVariants: true,
-  },
-})
 
 const LessonScreen = withRouter(({ location, history }) => {
   const searchVal = queryString.parse(location.search)
@@ -140,34 +123,32 @@ const LessonScreen = withRouter(({ location, history }) => {
   }
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          backgroundColor: colors.bittersweet,
+    <div
+      style={{
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        backgroundColor: colors.bittersweet,
+      }}
+    >
+      <LessonContext.Provider
+        value={{
+          currCardIndex,
+          nextCard,
+          prevCard:
+            currSectIndex === 0 && currCardIndex === 0 ? undefined : prevCard,
+          prev: prevSect,
+          next: nextSect,
+          onExitLesson: () => history.push('/main'),
+          progress: currentProg / totalProg,
         }}
       >
-        <LessonContext.Provider
-          value={{
-            currCardIndex,
-            nextCard,
-            prevCard:
-              currSectIndex === 0 && currCardIndex === 0 ? undefined : prevCard,
-            prev: prevSect,
-            next: nextSect,
-            onExitLesson: () => history.push('/main'),
-            progress: currentProg / totalProg,
-          }}
-        >
-          {RenderSect(currSect)}
-        </LessonContext.Provider>
-      </div>
-    </MuiThemeProvider>
+        {RenderSect(currSect)}
+      </LessonContext.Provider>
+    </div>
   )
 })
 
