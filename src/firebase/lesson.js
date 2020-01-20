@@ -55,7 +55,7 @@ export const fetchCardsData = (cardArr = []) => {
   let progress = 0
   return Promise.all(
     cardArr.map(c => {
-      if (c.constructor.name === 'DocumentReference') {
+      if (c && typeof c.get === 'function') {
         // is ref
         return c
           .get()
