@@ -22,6 +22,9 @@ const styles = {
     color: colors.white,
     fontSize: '2.2vh',
     fontWeight: 'bold',
+    '&:hover': {
+      backgroundColor: colors.cinnabar99Opa,
+    },
   },
 }
 
