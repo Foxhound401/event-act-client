@@ -32,12 +32,12 @@ const App = ({ classes }) => {
       <CssBaseline />
       <Router>
         <Switch>
-          <PrivateRoute path="/lesson">
+          <Route path="/lesson">
             <Lesson />
-          </PrivateRoute>
-          <PrivateRoute path="/main">
+          </Route>
+          <Route path="/main">
             <Main />
-          </PrivateRoute>
+          </Route>
           <Route path="/login">
             <Login />
           </Route>
