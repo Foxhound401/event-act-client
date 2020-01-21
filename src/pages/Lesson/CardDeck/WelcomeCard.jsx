@@ -82,14 +82,11 @@ const WelcomeCard = ({ data, classes, next, prev }) => {
                 <Typography className={classes.skillText} variant="body1">
                   SKILL
                 </Typography>
-                <LoadingComp
-                  isLoading={skill === null}
-                  renderer={() => (
-                    <Typography className={classes.normalText} variant="body1">
-                      {skill.title || ''}
-                    </Typography>
-                  )}
-                />
+                <LoadingComp isLoading={skill === null}>
+                  <Typography className={classes.normalText} variant="body1">
+                    {(skill && skill.title) || ''}
+                  </Typography>
+                </LoadingComp>
               </div>
             </div>
             <div className={classes.divider} />

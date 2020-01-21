@@ -18,14 +18,12 @@ const LessonSet = ({ data }) => {
     <div style={{ padding: 10 }}>
       <h3>{title}</h3>
       <p>{desc}</p>
-      <LoadingComp
-        isLoading={lessons === null}
-        renderer={() =>
+      <LoadingComp isLoading={lessons === null}>
+        {lessons &&
           lessons.map(lesson => (
             <LessonCard key={'lesson-' + lesson.id} data={lesson} />
-          ))
-        }
-      />
+          ))}
+      </LoadingComp>
     </div>
   )
 }

@@ -28,7 +28,7 @@ const Login = withSuspense(React.lazy(() => import('./pages/Login')))
 
 const App = ({ classes }) => {
   return (
-    <div className={classes.container}>
+    <>
       <CssBaseline />
       <Router>
         <Switch>
@@ -53,7 +53,7 @@ const App = ({ classes }) => {
           </Route>
         </Switch>
       </Router>
-    </div>
+    </>
   )
 }
 
@@ -61,7 +61,7 @@ const styles = () => ({
   container: {
     width: '100%',
     height: '100%',
-  }
+  },
 })
 
 export default withStyles(styles)(App)

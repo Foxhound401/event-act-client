@@ -1,6 +1,6 @@
 import React from 'react'
 import Loading from './Loading'
 
-export default ({ isLoading, renderer = () => false }) => {
-  return isLoading ? <Loading /> : renderer()
+export default ({ isLoading, children }) => {
+  return isLoading ? <Loading /> : children || false
 }

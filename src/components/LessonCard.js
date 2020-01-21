@@ -28,10 +28,9 @@ const LessonCard = withRouter(({ history, data }) => {
       <h4>{data.title}</h4>
       <sub>by {data.by}</sub>
       <br />
-      <LoadingComp
-        isLoading={skill === null}
-        renderer={() => <sub>{skill.title || ''}</sub>}
-      />
+      <LoadingComp isLoading={skill === null}>
+        <sub>{(skill && skill.title) || ''}</sub>
+      </LoadingComp>
     </Paper>
   )
 })

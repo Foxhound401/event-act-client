@@ -17,14 +17,12 @@ const Skill = ({ data }) => {
     <div style={{ padding: 10 }}>
       <h3>{title}</h3>
       <p>{desc}</p>
-      <LoadingComp
-        isLoading={lessonSets === null}
-        renderer={() =>
+      <LoadingComp isLoading={lessonSets === null}>
+        {lessonSets &&
           lessonSets.map((set, index) => (
             <LessonSet key={'lesson-sets-' + set.id} data={set} />
-          ))
-        }
-      />
+          ))}
+      </LoadingComp>
     </div>
   )
 }

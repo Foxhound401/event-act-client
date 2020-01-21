@@ -12,16 +12,15 @@ const Main = () => {
   }, [])
 
   return (
-    <div>
-      <LoadingComp
-        isLoading={skills === null}
-        renderer={() =>
+    <LoadingComp isLoading={skills === null}>
+      <div>
+        <h4>All Skills</h4>
+        {skills &&
           skills.map((skill, index) => (
             <SkillSection key={'skill-' + skill.id} data={skill} />
-          ))
-        }
-      />
-    </div>
+          ))}
+      </div>
+    </LoadingComp>
   )
 }
 
