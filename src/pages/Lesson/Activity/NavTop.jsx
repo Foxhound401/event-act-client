@@ -22,7 +22,10 @@ const styles = {
   },
   title: {
     color: colors.white,
-    fontSize: '5vh',
+    fontSize: '4vh',
+    position: 'absolute',
+    width: '100%',
+    textAlign: 'center',
   },
 }
 
@@ -37,7 +40,6 @@ const NavTop = ({ prev, title = '', classes }) => {
       ) : (
         false
       )}
-      <div className={classes.button} />
     </div>
   )
 }

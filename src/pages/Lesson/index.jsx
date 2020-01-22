@@ -9,25 +9,40 @@ import colors from '../../utils/colors'
 import WelcomeCard from './CardDeck/WelcomeCard'
 import PreviewCard from './CardDeck/PreviewCard'
 import Activity from './Activity'
+import EndScreen from './EndScreen'
 import { getLessonById, fetchCardsData } from '../../firebase/lesson'
 
 import LessonContext from './LessonContext'
 
 const LessonScreen = withRouter(({ location, history }) => {
   const searchVal = queryString.parse(location.search)
-  const { lessonId } = searchVal
+  const { id } = searchVal
 
   const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
+  if (!id) setError('Require Id')
+
   const [currSectIndex, setCurrSectIndex] = useState(0)
   const [currCardIndex, setCurrCardIndex] = useState(0)
-  useEffect(() => {
-    getLessonById(lessonId)
-      .then(async res => {
-        res.cards = await fetchCardsData(res.cards)
-        return res
-      })
-      .then(setData)
-      .catch(console.error)
+  const [showEnd, setShowEnd] = useState(false)
+  useEffect(function fetchData() {
+    if (id) {
+      getLessonById(id)
+        .then(async res => {
+          console.log(res)
+          if (!res) {
+            setError('Id not found')
+            return null
+          }
+          res.cards = await fetchCardsData(res.cards)
+          return res
+        })
+        .then(setData)
+        .catch(e => {
+          console.error(e)
+          setTimeout(fetchData, 3000)
+        })
+    }
   }, [])
 
   const { cards: sects = [] } = data || {}
@@ -45,6 +60,7 @@ const LessonScreen = withRouter(({ location, history }) => {
       setCurrCardIndex(0)
     } else {
       // TODO: SHOW END SCREEN
+      setShowEnd(true)
     }
   }
   const prevSect = () => {
@@ -102,11 +118,18 @@ const LessonScreen = withRouter(({ location, history }) => {
     }
   }, [currCardIndex])
 
+  if (error) {
+    return (
+      <h3 style={{ color: colors.cinnabar, textAlign: 'center' }}>
+        Error: {error}
+      </h3>
+    )
+  }
   if (!data) return <Loading />
 
   const RenderSect = sect => {
+    if (!sect) return false
     const { type } = sect
-    console.log(sect)
     if (type === 'intro') {
       return <WelcomeCard data={data} />
     }
@@ -134,31 +157,26 @@ const LessonScreen = withRouter(({ location, history }) => {
         backgroundColor: colors.bittersweet,
       }}
     >
-      <LessonContext.Provider
-        value={{
-          currCardIndex,
-          nextCard,
-          prevCard:
-            currSectIndex === 0 && currCardIndex === 0 ? undefined : prevCard,
-          prev: prevSect,
-          next: nextSect,
-          onExitLesson: () => history.push('/main'),
-          progress: currentProg / totalProg,
-        }}
-      >
-        {RenderSect(currSect)}
-      </LessonContext.Provider>
+      {showEnd ? (
+        <EndScreen data={data} />
+      ) : (
+        <LessonContext.Provider
+          value={{
+            currCardIndex,
+            nextCard,
+            prevCard:
+              currSectIndex === 0 && currCardIndex === 0 ? undefined : prevCard,
+            prev: prevSect,
+            next: nextSect,
+            onExitLesson: () => history.push('/main'),
+            progress: currentProg / totalProg,
+          }}
+        >
+          {RenderSect(currSect)}
+        </LessonContext.Provider>
+      )}
     </div>
   )
 })
-
-const EndScreen = ({ onRelearn, backToMenu }) => {
-  return (
-    <>
-      <Button onClick={onRelearn}>Relearn</Button>
-      <Button onClick={backToMenu}>Back to Main menu</Button>
-    </>
-  )
-}
 
 export default LessonScreen

@@ -25,6 +25,7 @@ const withSuspense = Component => {
 const Lesson = withSuspense(React.lazy(() => import('./pages/Lesson')))
 const Main = withSuspense(React.lazy(() => import('./pages/Main')))
 const Login = withSuspense(React.lazy(() => import('./pages/Login')))
+const Skill = withSuspense(React.lazy(() => import('./pages/Skill')))
 
 const App = ({ classes }) => {
   return (
@@ -38,9 +39,13 @@ const App = ({ classes }) => {
           <Route path="/main">
             <Main />
           </Route>
+          <Route path="/skill">
+            <Skill />
+          </Route>
           <Route path="/login">
             <Login />
           </Route>
+          <Route path="/reload" component={null} key="reload" />
           {/* <PrivateRoute path="/dashboard">
             <h5>Dashboard</h5>
           </PrivateRoute> */}

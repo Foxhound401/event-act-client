@@ -38,13 +38,18 @@ const Choice = ({
     return (
       <FormControlLabel
         control={
-          <Checkbox color="primary" checked={isSelected} onChange={onClick} />
+          <Checkbox
+            style={{ color: colors.white }}
+            color="primary"
+            checked={isSelected}
+            onChange={onClick}
+          />
         }
-        label={(
+        label={
           <Typography className={classes.checkBoxText} variant="body1">
             {String(text)}
           </Typography>
-        )}
+        }
       />
     )
   }
@@ -59,8 +64,8 @@ const Choice = ({
               : 'red'
             : 'yellow'
           : showResult && isCorrect
-            ? 'lightgreen'
-            : 'white',
+          ? 'lightgreen'
+          : 'white',
         marginBottom: 10,
         borderRadius: '2vw',
       }}

@@ -23,7 +23,7 @@ const LessonCard = withRouter(({ history, data }) => {
         padding: 5,
         textAlign: 'center',
       }}
-      onClick={() => history.push('/lesson?lessonId=' + data.id)}
+      onClick={() => history.push('/lesson?id=' + data.id)}
     >
       <h4>{data.title}</h4>
       <sub>by {data.by}</sub>
