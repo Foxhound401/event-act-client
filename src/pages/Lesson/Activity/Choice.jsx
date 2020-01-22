@@ -37,41 +37,55 @@ const Choice = ({
   if (isCheckbox) {
     return (
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             style={{ color: colors.white }}
             color="primary"
             checked={isSelected}
             onChange={onClick}
           />
-        }
-        label={
+        )}
+        label={(
           <Typography className={classes.checkBoxText} variant="body1">
             {String(text)}
           </Typography>
-        }
+        )}
       />
     )
+  }
+
+  let background = colors.white
+  let textColor = colors.cinnabar
+  if (isSelected) {
+    background = colors.mustard
+    if (showResult) {
+      textColor = colors.white
+      background = colors.forestGreen
+      if (!isCorrect) {
+        background = colors.mojo
+      }
+    }
+  } else if (showResult && isCorrect) {
+    textColor = colors.white
+    background = colors.jungleGreen
   }
 
   return (
     <Button
       style={{
-        backgroundColor: isSelected
-          ? showResult
-            ? isCorrect
-              ? 'green'
-              : 'red'
-            : 'yellow'
-          : showResult && isCorrect
-          ? 'lightgreen'
-          : 'white',
+        backgroundColor: background,
         marginBottom: 10,
         borderRadius: '2vw',
       }}
       onClick={onClick}
     >
-      <Typography className={classes.choiceText} variant="body1">
+      <Typography
+        className={classes.choiceText}
+        style={{
+          color: textColor,
+        }}
+        variant="body1"
+      >
         {String(text)}
       </Typography>
     </Button>

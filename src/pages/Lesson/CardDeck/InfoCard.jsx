@@ -18,7 +18,8 @@ const theme = createMuiTheme({
     body1: {
       color: colors.bittersweet,
       fontSize: '3.5vh',
-      marginBottom: '3vh',
+      marginBottom: '2vh',
+      lineHeight: 1.3,
     },
     useNextVariants: true,
   },

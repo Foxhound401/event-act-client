@@ -26,6 +26,16 @@ const styles = {
       backgroundColor: colors.cinnabar99Opa,
     },
   },
+  imageContainer: {
+    width: '100%',
+    height: '30%',
+    marginBottom: '2vw',
+  },
+  image: {
+    objectFit: 'contain',
+    width: '100%',
+    height: '100%',
+  },
 }
 
 const CardDeck = ({ data, classes }) => {
@@ -35,11 +45,25 @@ const CardDeck = ({ data, classes }) => {
       keyExtractor={(c, i) => id + '-' + i}
       cards={cards}
       dataRenderer={(data, props) => {
-        const { desc = [], button } = data
+        const { desc = [], button, image_url } = data
         const texts = Array.isArray(desc) ? desc : [desc]
 
         return (
           <>
+            {image_url ? (
+              <div className={classes.imageContainer}>
+                <img
+                  className={classes.image}
+                  src={image_url}
+                  onError={e => {
+                    e.target.src = 'https://via.placeholder.com/150'
+                  }}
+                  alt="card img"
+                />
+              </div>
+            ) : (
+              false
+            )}
             <div className={classes.textContainer}>
               {texts.map((t, index) => (
                 <Typography

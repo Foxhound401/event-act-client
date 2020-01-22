@@ -41,29 +41,58 @@ const styles = {
       backgroundColor: colors.forestGreen,
     },
   },
+  imageContainer: {
+    width: '100%',
+    height: '30%',
+    marginBottom: '2vw',
+  },
+  image: {
+    objectFit: 'contain',
+    width: '100%',
+    height: '100%',
+  },
 }
 
 const getRenderer = classes => (data, { slideOut, disabled }) => {
-  const { desc = [], button, type, id } = data
+  const { desc = [], button, type, id, image_url } = data
   const texts = Array.isArray(desc) ? desc : [desc]
   const isMultiple = type === 'question_multi' || type === 'check_list'
+  const hasChoices =
+    type === 'question_multi' ||
+    type === 'check_list' ||
+    type === 'question_single'
   return (
     <>
+      {image_url ? (
+        <div className={classes.imageContainer}>
+          <img
+            className={classes.image}
+            src={image_url}
+            onError={e => {
+              e.target.src = 'https://via.placeholder.com/150'
+            }}
+            alt="card img"
+          />
+        </div>
+      ) : (
+        false
+      )}
       {texts.map((t, index) => (
         <Typography variant="body1" key={'card-text-' + id + '-' + index}>
           {t}
         </Typography>
       ))}
-      {isMultiple ? (
+      {hasChoices ? (
         <ActivityMultiChoices
           data={data}
           disabled={disabled}
           onDone={slideOut}
+          isMultiple={isMultiple}
         />
       ) : (
         false
       )}
-      {!isMultiple && button ? (
+      {!hasChoices && button ? (
         <Button
           className={classes.cardButton}
           variant="contained"

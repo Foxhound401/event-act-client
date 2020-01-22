@@ -72,9 +72,12 @@ const WelcomeCard = ({ data, classes, next, prev }) => {
             <div className={classes.imageContainer}>
               <img
                 className={classes.image}
-                src="https://via.placeholder.com/150"
+                src={data.image_url || 'https://via.placeholder.com/150'}
+                onError={e => {
+                  e.target.src = 'https://via.placeholder.com/150'
+                }}
                 alt="lesson cover img"
-              ></img>
+              />
             </div>
             <div className={classes.upperTextContainer}>
               <Typography variant="h4">{data.title}</Typography>

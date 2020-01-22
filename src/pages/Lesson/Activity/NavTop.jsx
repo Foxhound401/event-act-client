@@ -19,6 +19,7 @@ const styles = {
   button: {
     width: '10vw',
     padding: '1vw',
+    zIndex: 5,
   },
   title: {
     color: colors.white,
