@@ -8,11 +8,11 @@ Mobile first approach application aim to aid people learn new skill with flashca
   &nbsp;
   &nbsp;
   &nbsp;
+  <img src="https://github.com/Foxhound401/event-act-client/raw/master/img/flow-over.png" width="200" height="390">
+  &nbsp;
+  &nbsp;
+  &nbsp;
   <img src="https://github.com/Foxhound401/event-act-client/raw/master/img/flash-frontpage.png" width="200" height="390">
-  &nbsp;
-  &nbsp;
-  &nbsp;
-  <img src="https://github.com/Foxhound401/event-act-client/raw/master/img/frontpage.png" width="200" height="390">
 </p>
 
 ## Technologies
@@ -23,4 +23,18 @@ Techstack use in this project:
 - Parcel
 ## Installation
 
+Clone the project.
 
+```
+git clone git@github.com:Foxhound401/event-act-client.git
+```
+
+Install dependencies.
+```
+npm install
+```
+
+Run the project.
+```
+npm run start 
+```
