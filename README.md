@@ -1,6 +1,6 @@
 # Event Act Client
 
-## Cross-platform fashcards for learner.
+## Cross-platform Web-base flashcards for learner.
 Mobile first approach application aim to aid people learn new skill with flashcards. Featuring short-quiz, and smart re-learn. Your mistake will be note and remind you on your next stack.
 
 <p align="center">
